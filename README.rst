@@ -1,3 +1,4 @@
+
 =========
 ctcsound7
 =========
@@ -9,7 +10,7 @@ of ctcsound
 
 
 Installation  
------------
+------------
 
 Csound needs to be installed in the system.
 
@@ -17,6 +18,4 @@ Csound needs to be installed in the system.
 .. code::
 
 	pip install ctcsound7
-
-
 
