@@ -44,7 +44,10 @@ else:
     arrFromPointer = lambda p : p.contents
 
 if sys.platform.startswith('linux'):
-    libcsound = ct.CDLL("libcsound64.so")
+    try:
+        libcsound = ct.CDLL("libcsound64.so")
+    except OSError:
+        libcsound = ct.CDLL(ctypes.util.find_library('csound64'))
 elif sys.platform.startswith('win'):
     if sys.version_info.major <=3 and sys.version_info.minor < 8:
         libcsound = ct.cdll.csound64

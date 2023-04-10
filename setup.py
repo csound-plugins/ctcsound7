@@ -7,7 +7,7 @@ Programming Language :: Python :: 3
 """
 
 setup(name='ctcsound7',
-      version='0.2.1',
+      version='0.3.0',
       url='https://github.com/csound-plugins/ctcsound7',
       description='Python bindings to the Csound API using ctypes', 
       long_description=open('README.rst').read(),
