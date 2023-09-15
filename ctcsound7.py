@@ -1,4 +1,4 @@
-#   ctcsound2.py:
+#   ctcsound7.py:
 #
 #   Wrapper around ctcsound.py to make it pip installable and version independent
 #   This wrapper begins with compatibility with csound 6.18 and is usable also
@@ -43,28 +43,37 @@ elif np.__version__ < '1.16':
 else:
     arrFromPointer = lambda p : p.contents
 
-if sys.platform.startswith('linux'):
-    try:
-        libcsound = ct.CDLL("libcsound64.so")
-    except OSError:
-        libcsound = ct.CDLL(ctypes.util.find_library('csound64'))
-elif sys.platform.startswith('win'):
-    if sys.version_info.major <=3 and sys.version_info.minor < 8:
-        libcsound = ct.cdll.csound64
+
+
+def csoundLibraryName() -> str:
+    platform = sys.platform
+    if platform.startswith('linux'):
+        return 'csound64'
+    elif platform.startswith('win'):
+        return 'csound64'
+    elif platform.startswith('darwin'):
+        return 'CsoundLib64'
     else:
-        libcsound = ct.CDLL(ctypes.util.find_library("csound64"))
-elif sys.platform.startswith('darwin'):
-    libcsound = ct.CDLL(ctypes.util.find_library("CsoundLib64"))
-else:
-    sys.exit("Don't know your system! Exiting...")
+        raise RuntimeError(f"Platform '{platform}' not supported")
+
+
+def csoundLibraryPath() -> str:
+    libname = csoundLibraryName()
+    return ctypes.util.find_library(libname)
+
+
+libcsoundPath = csoundLibaryPath()
+if libcsoundPath is None:
+    sys.exit("Csound library not found")
+libcsound = ct.CDLL(libcsoundpath)
 
 
 APIVERSION = libcsound.csoundGetAPIVersion()
 VERSION = libcsound.csoundGetVersion()
 
-# print(f"API version: {APIVERSION}, csound version: {VERSION}")
 
 MYFLT = ct.c_double
+
 
 class CsoundParams(ct.Structure):
     _fields_ = [("debug_mode", ct.c_int),        # debug mode, 0 or 1
