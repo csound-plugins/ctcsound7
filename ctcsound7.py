@@ -62,7 +62,7 @@ def csoundLibraryPath() -> str:
     return ctypes.util.find_library(libname)
 
 
-libcsoundPath = csoundLibaryPath()
+libcsoundPath = csoundLibraryPath()
 if libcsoundPath is None:
     sys.exit("Csound library not found")
 libcsound = ct.CDLL(libcsoundpath)
