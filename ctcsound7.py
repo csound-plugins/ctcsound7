@@ -57,21 +57,24 @@ def csoundLibraryName() -> str:
         raise RuntimeError(f"Platform '{platform}' not supported")
 
 
-def _find_library_linux(name):
+def _findLibraryLinux(name):
     libname = ctypes.util.find_library(name)
     if f"{libname}.so." in libname:
         # There might be a libcsound64.so as a link to a concrete lib
         # We should use that
         parentname = libname.split(".so.")[0] + ".so"
-        if os.path.exists(parentname):
-            return os.path.realpath(parentname)
+        try:
+            cdll = ctypes.CDLL(parentname)
+            return parentname
+        except OSError:
+            pass
     return libname
 
 
 def csoundLibraryPath() -> str:
     libname = csoundLibraryName()
     if sys.platform == 'linux':
-        return _find_library_linux(libname)
+        return _findLibraryLinux(libname)
     return ctypes.util.find_library(libname)
 
 
