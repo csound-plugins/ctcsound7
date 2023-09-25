@@ -44,7 +44,6 @@ else:
     arrFromPointer = lambda p : p.contents
 
 
-
 def csoundLibraryName() -> str:
     platform = sys.platform
     if platform.startswith('linux'):
@@ -68,7 +67,7 @@ def csoundDLL() -> tuple[ct.CDLL, str]:
         libname = csoundLibraryName()
     path = ctypes.util.find_library(libname)
     if path is None:
-        sys.exit("Csound library not found")
+        sys.exit(f"Csound library not found (searched for '{libname}') - Make sure that csound is installed")
     return ct.CDLL(path), path
 
 
@@ -119,7 +118,9 @@ class CsoundParams(ct.Structure):
                 ("ksmps_override", ct.c_int),    # ksmps override
                 ("FFT_library", ct.c_int)]       # fft_lib
 
+
 string128 = ct.c_char * 128
+
 
 class CsoundAudioDevice(ct.Structure):
     _fields_ = [("device_name", string128),
@@ -128,12 +129,14 @@ class CsoundAudioDevice(ct.Structure):
                 ("max_nchnls", ct.c_int),
                 ("isOutput", ct.c_int)]
 
+
 class CsoundMidiDevice(ct.Structure):
     _fields_ = [("device_name", string128),
                 ("interface_name", string128),
                 ("device_id", string128),
                 ("midi_module", string128),
                 ("isOutput", ct.c_int)]
+
 
 class CsoundRtAudioParams(ct.Structure):
     _fields_ = [("devName", ct.c_char_p),   # device name (NULL/empty: default)
@@ -144,9 +147,11 @@ class CsoundRtAudioParams(ct.Structure):
                 ("sampleFormat", ct.c_int), # sample format (AE_SHORT etc.)
                 ("sampleRate", ct.c_float)] # sample rate in Hz
 
+
 class RtClock(ct.Structure):
     _fields_ = [("starttime_real", ct.c_int64),
                 ("starttime_CPU", ct.c_int64)]
+
 
 class OpcodeListEntry(ct.Structure):
     _fields_ = [("opname", ct.c_char_p),
@@ -154,9 +159,11 @@ class OpcodeListEntry(ct.Structure):
                 ("intypes", ct.c_char_p),
                 ("flags", ct.c_int)]
 
+
 class CsoundRandMTState(ct.Structure):
     _fields_ = [("mti", ct.c_int),
                 ("mt", ct.c_uint32*624)]
+
 
 # PVSDATEXT is a variation on PVSDAT used in the pvs bus interface
 class PvsdatExt(ct.Structure):
@@ -169,6 +176,7 @@ class PvsdatExt(ct.Structure):
                 ("format", ct.c_int32),
                 ("framecount", ct.c_uint32),
                 ("frame", ct.POINTER(ct.c_float))]
+
 
 # This structure holds the parameter hints for control channels
 class ControlChannelHints(ct.Structure):
@@ -183,12 +191,15 @@ class ControlChannelHints(ct.Structure):
                 # This member must be set explicitly to None if not used
                 ("attributes", ct.c_char_p)]
 
+
 class ControlChannelInfo(ct.Structure):
     _fields_ = [("name", ct.c_char_p),
                 ("type", ct.c_int),
                 ("hints", ControlChannelHints)]
 
+
 CAPSIZE  = 60
+
 
 class Windat(ct.Structure):
     _fields_ = [("windid", ct.POINTER(ct.c_uint)),    # set by makeGraph()
@@ -204,14 +215,17 @@ class Windat(ct.Structure):
                 ("danflag", ct.c_int),             # set to 1 for extra Yaxis mid span
                 ("absflag", ct.c_int)]             # set to 1 to skip abs check
 
+
 # Symbols for Windat.polarity field
 NOPOL = 0
 NEGPOL = 1
 POSPOL = 2
 BIPOL = 3
 
+
 class NamedGen(ct.Structure):
     pass
+
 
 NamedGen._fields_ = [
     ("name", ct.c_char_p),
@@ -444,7 +458,7 @@ libcsound.csoundGetNamedGens.argtypes = [ct.c_void_p]
 libcsound.csoundNewOpcodeList.argtypes = [ct.c_void_p, ct.POINTER(ct.POINTER(OpcodeListEntry))]
 libcsound.csoundDisposeOpcodeList.argtypes = [ct.c_void_p, ct.POINTER(OpcodeListEntry)]
 OPCODEFUNC = ct.CFUNCTYPE(ct.c_int, ct.c_void_p, ct.c_void_p)
-libcsound.csoundAppendOpcode.argtypes = [ct.c_void_p, ct.c_char_p, ct.c_int, ct.c_int, ct.c_int, \
+libcsound.csoundAppendOpcode.argtypes = [ct.c_void_p, ct.c_char_p, ct.c_int, ct.c_int, ct.c_int,
                                          ct.c_char_p, ct.c_char_p, OPCODEFUNC, OPCODEFUNC, OPCODEFUNC]
 
 YIELDFUNC = ct.CFUNCTYPE(ct.c_int, ct.c_void_p)
@@ -519,19 +533,16 @@ libcsound.csoundGetLibrarySymbol.argtypes = [ct.c_void_p, ct.c_char_p]
 
 
 def cchar(s):
-    if sys.version_info[0] >= 3:
-        return ct.c_char(ord(s[0]))
-    return ct.c_char(s[0])
+    return ct.c_char(ord(s[0]))
 
-def cstring(s):
-    if sys.version_info[0] >= 3 and s != None:
-        return bytes(s, 'utf-8')
-    return s
 
-def pstring(s):
-    if sys.version_info[0] >= 3 and s != None:
-        return str(s, 'utf-8')
-    return s
+def cstring(s: str) -> bytes:
+    return bytes(s, 'utf-8')
+
+
+def pstring(s: bytes) -> str:
+    return str(s, 'utf-8')
+
 
 def csoundArgList(lst):
     if len(lst) == 1 and type(lst[0]) is list:
@@ -701,11 +712,15 @@ def csoundInitialize(flags):
     """
     return libcsound.csoundInitialize(flags)
 
+
 def setOpcodedir(s):
     """Sets an opcodedir override for csoundCreate()."""
     libcsound.csoundSetOpcodedir(cstring(s))
 
+
 defaultMessageCbRef = None
+
+
 def setDefaultMessageCallback(function):
     """Not fully implemented. Do not use it yet except for disabling messaging:
     
@@ -713,12 +728,13 @@ def setDefaultMessageCallback(function):
         pass
     ctcsound.setDefaultMessageCallback(noMessage)
     """
-    global defaultMessageCbReg
+    global defaultMessageCbRef
     defaultMessageCbRef = DEFMSGFUNC(function)
     libcsound.csoundSetDefaultMessageCallback(defaultMessageCbRef)
+
     
 class Csound:
-    #Instantiation
+    
     def __init__(self, hostData=None, pointer_=None):
         """Creates an instance of Csound.
        
@@ -813,8 +829,6 @@ class Csound:
             retval = cs.evalCode(code)
         """
         return libcsound.csoundEvalCode(self.cs, cstring(code))
-    
-    #def initializeCscore(insco, outsco):
     
     def compileArgs(self, *args):
         """Compiles *args*.
@@ -1156,7 +1170,7 @@ class Csound:
         type_ = ct.create_string_buffer(6)
         format = ct.create_string_buffer(8)
         libcsound.csoundGetOutputFormat(self.cs, type_, format)
-        return pstring(string_at(type_)), pstring(string_at(format))
+        return pstring(ct.string_at(type_)), pstring(ct.string_at(format))
 
     def setInput(self, name):
         """Sets input source."""
@@ -1224,8 +1238,8 @@ class Csound:
         err = libcsound.csoundGetModule(self.cs, number, name, type_)
         if err == CSOUND_ERROR:
             return None, None, err
-        n = pstring(string_at(name.contents))
-        t = pstring(string_at(type_.contents))
+        n = pstring(ct.string_at(name.contents))
+        t = pstring(ct.string_at(type_.contents))
         return n, t, err
     
     def inputBufferSize(self):
@@ -2125,7 +2139,7 @@ class Csound:
         """
         s = ct.create_string_buffer(nameLen)
         libcsound.csoundGetNamedGEN(self.cs, num, s, nameLen)
-        return pstring(string_at(s, nameLen))
+        return pstring(ct.string_at(s, nameLen))
     
     #Function Table Display
     def setIsGraphable(self, isGraphable):
@@ -2198,9 +2212,9 @@ class Csound:
         
         Returns zero on success.
         """
-        return libcsound.csoundAppendOpcode(self.cs, cstring(opname), dsblksiz, flags, thread,\
-                                            cstring(outypes), cstring(intypes),\
-                                            OPCODEFUNC(iopfunc),\
+        return libcsound.csoundAppendOpcode(self.cs, cstring(opname), dsblksiz, flags, thread,
+                                            cstring(outypes), cstring(intypes),
+                                            OPCODEFUNC(iopfunc),
                                             OPCODEFUNC(kopfunc),
                                             OPCODEFUNC(aopfunc))
     
