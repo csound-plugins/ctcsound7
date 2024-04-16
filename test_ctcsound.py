@@ -21,7 +21,9 @@
     02111-1307 USA
 '''
 
-import ctcsound, numpy as np, ctypes as ct
+import ctcsound7 as ctcsound
+import numpy as np
+import ctypes as ct
 import unittest
 
 

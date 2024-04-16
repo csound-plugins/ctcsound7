@@ -2790,6 +2790,8 @@ libcspt.CsoundPTsetScoreOffsetSeconds.argtypes = [ct.c_void_p, ct.c_double]
 libcspt.CsoundPTjoin.argtypes = [ct.c_void_p]
 libcspt.CsoundPTflushMessageQueue.argtypes = [ct.c_void_p]
 
+# libcspt.CsoundPTcompile.argtypes = [ct.c_void_p, ct.c_char_p]
+
 
 class CsoundPerformanceThread:
     """Performs a score in a separate thread until the end of score is reached.
@@ -2848,7 +2850,7 @@ class CsoundPerformanceThread:
         """Stops performance (cannot be continued)."""
         libcspt.CsoundPTstop(self.cpt)
 
-        def record(self, filename, samplebits, numbufs):
+    def record(self, filename, samplebits, numbufs):
         """Starts recording the output from Csound.
 
         The sample rate and number of channels are taken directly from the
@@ -2856,11 +2858,11 @@ class CsoundPerformanceThread:
         """
         libcspt.CsoundPTrecord(self.cpt, cstring(filename), samplebits, numbufs)
 
-        def stopRecord(self):
+    def stopRecord(self):
         """Stops recording and closes audio file."""
         libcspt.CsoundPTstopRecord(self.cpt)
 
-        def scoreEvent(self, absp2mode, opcod, pFields):
+    def scoreEvent(self, absp2mode, opcod, pFields):
         """Sends a score event.
 
         The event has type *opcod* (e.g. 'i' for a note event).
@@ -2875,15 +2877,15 @@ class CsoundPerformanceThread:
         numFields = p.size
         libcspt.CsoundPTscoreEvent(self.cpt, ct.c_int(absp2mode), cchar(opcod), numFields, ptr)
 
-        def inputMessage(self, s):
+    def inputMessage(self, s):
         """Sends a score event as a string, similarly to line events (-L)."""
         libcspt.CsoundPTinputMessage(self.cpt, cstring(s))
 
-        def setScoreOffsetSeconds(self, timeVal):
+    def setScoreOffsetSeconds(self, timeVal):
         """Sets the playback time pointer to the specified value (in seconds)."""
         libcspt.CsoundPTsetScoreOffsetSeconds(self.cpt, ct.c_double(timeVal))
 
-        def join(self):
+    def join(self):
         """Waits until the performance is finished or fails.
 
         Returns a positive value if the end of score was reached or
@@ -2899,3 +2901,6 @@ class CsoundPerformanceThread:
         (pause, send score event, etc.)
         """
         libcspt.CsoundPTflushMessageQueue(self.cpt)
+
+    # def compile(self, s):
+    #     libcspt.CsoundPTcompile(self.cpt, cstring(s))
