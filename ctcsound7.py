@@ -67,7 +67,7 @@ def csoundDLL() -> tuple[ct.CDLL, str]:
         libname = csoundLibraryName()
     path = ctypes.util.find_library(libname)
     if path is None:
-        sys.exit(f"Csound library not found (searched for '{libname}') - Make sure that csound is installed")
+        raise ImportError(f"Csound library not found (searched for '{libname}') - Make sure that csound is installed")
     return ct.CDLL(path), path
 
 
