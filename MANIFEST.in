@@ -1,0 +1,5 @@
+exclude *.yml
+exclude pyrightconfig.json
+exclude cookbook
+exclude .gitignore
+prune cookbook

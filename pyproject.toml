@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ctcsound7"
+version = "0.5.0"
+description = "Python bindings to the Csound API, supporting all versions of csound higher or equal to 6.18"
+authors = [
+    { name = "Eduardo Moguillansky", email = "eduardo.moguillansky@gmail.com" },
+]
+license = { file = "LICENSE" }
+readme = "README.rst"
+classifiers = [
+    "Topic :: Multimedia :: Sound/Audio",
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+
+requires-python = ">=3.9"
+keywords = ["csound"]
+
+dependencies = ["numpy"]
+
+[tool.setuptools]
+include-package-data = true
+py-modules = ["ctcsound7"]
+
+[project.urls]
+"Homepage" = "https://github.com/csound-plugins/ctcsound7"
