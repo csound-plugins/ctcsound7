@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ctcsound7"
-version = "0.5.0"
+version = "0.6.1"
 description = "Python bindings to the Csound API, supporting all versions of csound higher or equal to 6.18"
 authors = [
     { name = "Eduardo Moguillansky", email = "eduardo.moguillansky@gmail.com" },
@@ -20,11 +20,10 @@ classifiers = [
 requires-python = ">=3.9"
 keywords = ["csound"]
 
-dependencies = ["numpy"]
+dependencies = ["numpy>=2.0"]
 
 [tool.setuptools]
-include-package-data = true
-py-modules = ["ctcsound7"]
+packages = ['ctcsound7']
 
 [project.urls]
 "Homepage" = "https://github.com/csound-plugins/ctcsound7"
