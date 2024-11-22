@@ -1,0 +1,27 @@
+.wy-nav-content {
+    max-width: 920px !important;
+}
+
+.documentwrapper {
+	max-width: 54rem !important;
+}
+
+table.autosummary {
+	margin-bottom: 2rem;
+}
+
+
+a.headerlink {
+	visibility: hidden;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+	text-decoration-thickness: max(3px, .0625em);
+}
+
+

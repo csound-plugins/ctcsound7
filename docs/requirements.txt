@@ -1,0 +1,7 @@
+numpy>=2.0
+sphinx-autodoc-typehints
+sphinx-automodapi
+autodocsumm
+sphinxawesome-theme
+sphinx-design
+sphinx-book-theme
