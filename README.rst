@@ -3,10 +3,9 @@
 ctcsound7
 =========
 
-Python bindings for Csound using ctypes. Can be used from python >= 3.8
+Python bindings for Csound using ctypes.
 
-This bindings can be used with any version of csound >= 6.18. It is a drop-in replacement
-of ctcsound, with the difference that can be used with any csound version. 
+This bindings can be used with any version of csound >= 6.18. Csound 7 is explicitely supported. 
 
 
 Installation  

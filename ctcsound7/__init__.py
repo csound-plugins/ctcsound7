@@ -35,19 +35,28 @@ import sys
 from . import _dll
 from .common import MYFLT, string128, cstring, DEFMSGFUNC
 
+_BUILDING_DOCS = 'sphinx' in sys.modules
 
-libcsound, libcsoundPath = _dll.csoundDLL()
 
-VERSION = libcsound.csoundGetVersion()
-if VERSION >= 7000:
-    APIVERSION = VERSION
+if not _BUILDING_DOCS:
+    libcsound, libcsoundPath = _dll.csoundDLL()
+    VERSION = libcsound.csoundGetVersion()
+    if VERSION >= 7000:
+        APIVERSION = VERSION
+    else:
+        APIVERSION = libcsound.csoundGetAPIVersion()
+
+    if VERSION < 7000:
+        from .api6 import *
+    else:
+        from .api7 import *
 else:
-    APIVERSION = libcsound.csoundGetAPIVersion()
+    print("------------- building documentation -------------")
+    VERSION = 0
+    from . import api6
+    from . import api7
 
-if VERSION < 7000:
-    from .api6 import *
-else:
-    from .api7 import *
+
 
 
 #Instantiation

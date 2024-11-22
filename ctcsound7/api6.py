@@ -7,6 +7,7 @@ import ctypes as ct
 import ctypes.util
 from .common import *
 from . import _util
+import warnings
 from typing import Callable, Sequence, Iterator
 
 from . import _dll
@@ -24,6 +25,18 @@ elif sys.platform.startswith('darwin'):
     libcspt = ct.CDLL(ctypes.util.find_library('csnd6.6.0'))
 else:
     raise ImportError(f"Platform {sys.platform} unknown")
+
+
+def _deprecated(s: str, level=2):
+    warnings.warn(s, DeprecationWarning, stacklevel=level)
+
+
+def _notPresentInCsound7(s=''):
+    if s:
+        msg = f'Not present in csound 7: {s}'
+    else:
+        msg = 'Not present in csound 7.'
+    _deprecated(msg, level=3)
 
 
 class CsoundParams(ct.Structure):
@@ -412,10 +425,13 @@ CSOUND_VAR_CHANNEL = 5
 
 
 class Csound:
+    """
+    Creates an instance of Csound.
+
+    """
 
     def __init__(self, hostData=None, opcodeDir='', pointer: ct.c_void_p | None = None):
-        """Creates an instance of Csound.
-
+        """
         Args:
             hostData: any sort of data to be accessed by callbacks, or None
             pointer: if given, the opaque pointer returned by ``libcsound.csoundCreate``
@@ -451,7 +467,15 @@ class Csound:
         return self._perfthread
 
     def loadPlugins(self, directory: str) -> int:
-        """Loads all plugins from a given directory."""
+        """
+        Loads all plugins from a given directory.
+
+        Args:
+            directory: the path to the plugins directory
+
+        Generally called immediatly after csoundCreate() to make new
+        opcodes/modules available for compilation and performance.
+        """
         return libcsound.csoundLoadPlugins(self.cs, cstring(directory))
 
     def __del__(self):
@@ -464,7 +488,11 @@ class Csound:
         return self.cs
 
     def version(self) -> int:
-        """Returns the version number times 1000 (5.00.0 = 5000)."""
+        """Returns the version number times 1000 (6.18.0 = 6180).
+
+        Returns:
+            an int representing the version
+        """
         return libcsound.csoundGetVersion()
 
     def APIVersion(self) -> int:
@@ -497,11 +525,21 @@ class Csound:
         return libcsound.csoundCompileTree(self.cs, tree)
 
     def compileTreeAsync(self, tree: ct.c_void_p) -> int:
-        """Asynchronous version of :meth:`compileTree`."""
+        """Asynchronous version of :meth:`compileTree`.
+
+        Args:
+            tree: the tree to compile
+
+        Returns:
+            CSOUND_SUCCESS (0) if ok, an error code otherwise
+        """
         return libcsound.csoundCompileTreeAsync(self.cs, tree)
 
     def deleteTree(self, tree: ct.c_void_p) -> None:
         """Frees the resources associated with the TREE *tree*.
+
+        Args:
+            tree: the tree to delete
 
         This function should be called whenever the TREE was
         created with :py:meth:`parseOrc` and memory can be deallocated.
@@ -509,19 +547,27 @@ class Csound:
         libcsound.csoundDeleteTree(self.cs, tree)
 
     def compileOrc(self, orc: str, block=True) -> int:
-        """Parses, and compiles the given orchestra from an ASCII string.
-
-        Also evaluating any global space code (i-time only).
-        This can be called during performance to compile a new orchestra::
-
-            orc = 'instr 1 \\n a1 rand 0dbfs/4 \\n out a1 \\n'
-            cs.compileOrc(orc)
+        """
+        Parses, and compiles the given orchestra from an ASCII string.
 
         Args:
             orc: the code to compile
 
         Returns:
             0 if OK, an error code otherwise
+
+        Also evaluating any global space code (i-time only)
+        in synchronous or asynchronous (block=False) mode.
+
+        .. code-block:: python
+
+            orc = r'''
+            instr 1
+                a1 rand 0dbfs/4
+                out a1
+            endin'''
+            cs.compileOrc(orc)
+
         """
         if block:
             return libcsound.csoundCompileOrc(self.cs, cstring(orc))
@@ -534,24 +580,35 @@ class Csound:
         The code is parsed and compiled, then placed on a queue for
         asynchronous merge into the running engine, and evaluation.
         The function returns following parsing and compilation.
+
+        Args:
+            orc: the orchestra code to compile
+
+        Returns:
+            CSOUND_SUCCESS (0) if ok, an error code otherwise
+
         """
         return libcsound.csoundCompileOrcAsync(self.cs, cstring(orc))
 
     def evalCode(self, code: str) -> float:
-        """Parses and compiles an orchestra given on an string.
-
-        Evaluating any global space code (i-time only).
-        On SUCCESS it returns a value passed to the
-        'return' opcode in global space::
-
-            code = 'i1 = 2 + 2 \\n return i1 \\n'
-            retval = cs.evalCode(code)
+        """
+        Parses and compiles an orchestra given on an string, synchronously.
 
         Args:
             code: the code to evaluate
 
         Returns:
-            the value passed to the ``return`` opcode
+            the value passed to the ``return`` opcode in global space
+
+        Evaluating any global space code (i-time only).
+        On SUCCESS it returns a value passed to the
+        ``return`` opcode in global space::
+
+            code = '''
+              i1 = 2 + 2
+              return i1
+            '''
+            retval = cs.evalCode(code)
         """
         return libcsound.csoundEvalCode(self.cs, cstring(code))
 
@@ -560,12 +617,18 @@ class Csound:
 
         Reads arguments, parses and compiles an orchestra,
         reads, processes and loads a score.
+
+        Args:
+            args: the arguments to compile, as passed to a csound executable
         """
         argc, argv = csoundArgList(args)
         return libcsound.csoundCompileArgs(self.cs, argc, argv)
 
-    def start(self):
+    def start(self) -> int:
         """Prepares Csound for performance.
+
+        Returns:
+            CSOUND_SUCCESS (0) if ok, an error code otherwise
 
         Normally called after compiling a csd file or an orc file, in which
         case score preprocessing is performed and performance terminates
@@ -582,7 +645,7 @@ class Csound:
         """
         return libcsound.csoundStart(self.cs)
 
-    def compile_(self, *args):
+    def compile_(self, *args) -> int:
         """Compiles Csound input files (such as an orchestra and score).
 
         As directed by the supplied command-line arguments,
@@ -604,6 +667,12 @@ class Csound:
 
     def compileCsd(self, path: str) -> int:
         """Compiles a Csound input file (.csd file).
+
+        Args:
+            path: the path to the csd file
+
+        Returns:
+            CSOUND_SUCCESS (0) if ok, an error code otherwise
 
         The input file includes command-line arguments, but does not
         perform the file. Returns a non-zero error code on failure.
@@ -731,9 +800,11 @@ class Csound:
     def UDPServerStart(self, port: int) -> int:
         """Starts the UDP server on a supplied port number.
 
+        Args:
+            port: port number
+
         Returns:
-            CSOUND_SUCCESS if server has been started successfully,
-            otherwise, CSOUND_ERROR.
+            CSOUND_SUCCESS if ok, CSOUND_ERROR otherwise.
         """
         return libcsound.csoundUDPServerStart(self.cs, ct.c_uint(port))
 
@@ -741,8 +812,8 @@ class Csound:
         """Returns the port number on which the server is running.
 
         Returns:
-            CSOUND_ERROR if the server is not running, CSOUND_SUCCESS
-            otherwise
+            CSOUND_SUCCESS if running, CSOUND_ERROR otherwise
+
         """
         return libcsound.csoundUDPServerStatus(self.cs)
 
@@ -750,8 +821,8 @@ class Csound:
         """Closes the UDP server.
 
         Returns:
-            CSOUND_SUCCESS if the running server was successfully closed,
-            CSOUND_ERROR otherwise.
+            CSOUND_SUCCESS on success, CSOUND_ERROR otherwise.
+
         """
         return libcsound.csoundUDPServerClose(self.cs)
 
@@ -832,7 +903,11 @@ class Csound:
         libcsound.csoundSetHostData(self.cs, ct.py_object(data))
 
     def setOption(self, option: str) -> int:
-        """Sets a single csound option (flag).
+        """
+        Sets a single csound option (flag).
+
+        Args:
+            option: a command line option passed to the csound process
 
         Returns:
             CSOUND_SUCCESS on success.
@@ -847,16 +922,27 @@ class Csound:
         Args:
             params: an instance of CsoundParams
 
+        .. note:: this method is NOT compatible with csound 7. In csound 7
+            it does not exist. All parameters can be set via command line
+            arguments
+
         These parameters are defined in the CsoundParams structure.
         They are the part of the OPARMS struct that are configurable through
         command line flags.
         The CsoundParams structure can be obtained using :py:meth:`params()`.
         These options should only be changed before performance has started.
         """
+        _deprecated("In csound 7 this method does not exist. All parameters "
+                    "must be set via command line arguments")
         libcsound.csoundSetParams(self.cs, ct.byref(params))
 
-    def params(self, params: CsoundParams) -> None:
+    def params(self, params: CsoundParams = None) -> CsoundParams:
         """Gets the current set of parameters from a CSOUND instance.
+
+        Args:
+            params: if given, the passed instance is filled with the
+                corresponding information, otherwise a new struct is
+                created
 
         These parameters are in a CsoundParams structure. See
         :py:meth:`setParams()`::
@@ -864,9 +950,12 @@ class Csound:
             p = CsoundParams()
             cs.params(p)
         """
+        if params is None:
+            params = CsoundParams()
         libcsound.csoundGetParams(self.cs, ct.byref(params))
+        return params
 
-    def debug(self):
+    def debug(self) -> bool:
         """Returns whether Csound is set to print debug messages.
 
         Those messages are sent through the :code:`DebugMsg()` internal API
@@ -877,6 +966,10 @@ class Csound:
     def setDebug(self, debug: bool) -> None:
         """Sets whether Csound prints debug messages.
 
+        Args:
+            debug: if True, debugging is turned on. Otherwise debug
+                messages are not printed
+
         The debug argument must have value :code:`True` or :code:`False`.
         Those messages come from the :code:`DebugMsg()` internal API function.
         """
@@ -885,22 +978,36 @@ class Csound:
     def systemSr(self, val: int = 0) -> float:
         """If val > 0, sets the internal variable holding the system HW sr.
 
+        Args:
+            val: if given, sets the system sr to this value
+
         Returns the stored value containing the system HW sr."""
         return libcsound.csoundSystemSr(self.cs, float(val))
 
     #General Input/Output
     def outputName(self) -> str:
-        """Returns the audio output name (-o)"""
+        """
+        Returns the audio output name (-o)
+
+        .. note:: this method is incompatible with csound 7
+        """
+        _deprecated("This method does not exist in csound 7")
         s = libcsound.csoundGetOutputName(self.cs)
         return pstring(s)
 
     def inputName(self) -> str:
-        """Returns the audio input name (-i)"""
+        """
+        Returns the audio input name (-i)
+
+        .. note:: this method is incompatible with csound 7
+        """
+        _deprecated("This method does not exist in csound 7")
         s = libcsound.csoundGetInputName(self.cs)
         return pstring(s)
 
-    def setOutput(self, name: str, type_='', format='') -> None:
-        """Sets output destination, type and format.
+    def setOutput(self, name: str, filetype='', format='') -> None:
+        """
+        Sets output destination, type and format.
 
         Args:
             name: the name of the output device/filename
@@ -915,8 +1022,10 @@ class Csound:
         For RT audio, use device_id from CS_AUDIODEVICE for a given audio
         device.
         """
+        _deprecated("This method does not exist in csound 7. For compatibility, use "
+                    "command-line options instead")
         n = cstring(name)
-        t = cstring(type_)
+        t = cstring(filetype)
         f = cstring(format)
         libcsound.csoundSetOutput(self.cs, n, t, f)
 
@@ -926,34 +1035,72 @@ class Csound:
         Returns:
             a tuple (type: str, format: str)
 
+        .. note:: not compatible with csound 7
+
         """
+        _deprecated("This method does not exist in csound 7")
         type_ = ct.create_string_buffer(6)
         format = ct.create_string_buffer(8)
         libcsound.csoundGetOutputFormat(self.cs, type_, format)
         return pstring(ct.string_at(type_)), pstring(ct.string_at(format))
 
     def setInput(self, name: str) -> None:
-        """Sets input source."""
+        """Sets input source.
+
+        Args:
+            name: name of the input device. Depends on the rt module used
+
+        """
+        _deprecated("This method does not exist in csound 7. For compatibility, use "
+                    "command-line options instead")
         libcsound.csoundSetInput(self.cs, cstring(name))
 
     def setMIDIInput(self, name: str) -> None:
-        """Sets MIDI input device name/number."""
+        """Sets MIDI input device name/number.
+
+        Args:
+            name: name of the input midi device
+        """
+        _deprecated("This method does not exist in csound 7. For compatibility, use "
+                    "command-line options instead")
         libcsound.csoundSetMidiInput(self.cs, cstring(name))
 
     def setMIDIFileInput(self, name: str) -> None:
-        """Sets MIDI file input name."""
+        """
+        Sets MIDI file input name.
+
+        Args:
+            name: the path to the MIDI file used as input
+        """
+        _deprecated("This method does not exist in csound 7. For compatibility, use "
+                    "command-line options instead")
         libcsound.csoundSetMIDIFileInput(self.cs, cstring(name))
 
     def setMIDIOutput(self, name: str) -> None:
-        """Sets MIDI output device name/number."""
+        """Sets MIDI output device name/number.
+
+        Args:
+            name: MIDI device to use as output
+        """
+        _deprecated("This method does not exist in csound 7. For compatibility, use "
+                    "command-line options instead")
         libcsound.csoundSetMIDIOutput(self.cs, cstring(name))
 
     def setMIDIFileOutput(self, name: str) -> None:
-        """Sets MIDI file output name."""
+        """Sets MIDI file output name.
+
+        Args:
+            name: name of a MIDI file to output to.
+        """
+        _deprecated("This method does not exist in csound 7. For compatibility, use "
+                    "command-line options instead")
         libcsound.csoundSetMIDIFileOutput(self.cs, cstring(name))
 
     def setFileOpenCallback(self, function: Callable[[bytes, int, int, int], None]) -> None:
         """Sets a callback for receiving notices whenever Csound opens a file.
+
+        Args:
+            function: the callback
 
         The callback is made after the file is successfully opened.
         The following information is passed to the callback:
@@ -975,7 +1122,20 @@ class Csound:
 
     #Realtime Audio I/O
     def setRTAudioModule(self, module: str) -> None:
-        """Sets the current RT audio module."""
+        """
+        Sets the current RT audio module.
+
+        Args:
+            module: the name of the module.
+
+        =========  ===========================
+        Platform    Modules
+        =========  ===========================
+        linux       jack, pa_cb (portaudio)
+        macos       au_hal (coreaudio), pa_cb, jack
+        windows     pa_cb (portaudio), winmm
+        =========  ===========================
+        """
         libcsound.csoundSetRTAudioModule(self.cs, cstring(module))
 
     def modules(self) -> list[tuple[str, str]]:
@@ -1033,11 +1193,19 @@ class Csound:
         return n, t, err
 
     def inputBufferSize(self) -> int:
-        """Returns the number of samples in Csound's input buffer."""
+        """Returns the number of samples in Csound's input buffer.
+
+        .. note:: Not present in csound 7
+        """
+        _notPresentInCsound7()
         return libcsound.csoundGetInputBufferSize(self.cs)
 
     def outputBufferSize(self) -> int:
-        """Returns the number of samples in Csound's output buffer."""
+        """Returns the number of samples in Csound's output buffer.
+
+        .. note:: Not present in csound 7
+        """
+        _notPresentInCsound7()
         return libcsound.csoundGetOutputBufferSize(self.cs)
 
     def inputBuffer(self) -> np.ndarray:
@@ -1045,7 +1213,11 @@ class Csound:
 
         Enables external software to write audio into Csound before
         calling :py:meth:`performBuffer()`.
+
+        .. note:: Not present in csound 7. Use :meth:`~Csound.spin`
+
         """
+        _notPresentInCsound7()
         buf = libcsound.csoundGetInputBuffer(self.cs)
         size = libcsound.csoundGetInputBufferSize(self.cs)
         return _util.castarray(buf, shape=(size,))
@@ -1053,9 +1225,15 @@ class Csound:
     def outputBuffer(self) -> np.ndarray:
         """Returns the Csound audio output buffer as an ndarray.
 
+        Returns:
+            a numpy array representing the csound audio output buffer
+
         Enables external software to read audio from Csound after
         calling :py:meth:`performBuffer()`.
+
+        .. note:: Not present in csound 7. Use :meth:`~Csound.spout` instead
         """
+        _notPresentInCsound7()
         buf = libcsound.csoundGetOutputBuffer(self.cs)
         size = libcsound.csoundGetOutputBufferSize(self.cs)
         return _util.castarray(buf, shape=(size,))
@@ -1071,7 +1249,12 @@ class Csound:
         return _util.castarray(buf, shape=(size,))
 
     def clearSpin(self) -> None:
-        """Clears the input buffer (spin)."""
+        """Clears the input buffer (spin).
+
+        .. note:: Not present in csound 7
+
+        """
+        _notPresentInCsound7()
         libcsound.csoundClearSpin(self.cs)
 
     def addSpinSample(self, frame: int, channel: int, sample: float) -> None:
@@ -1089,7 +1272,9 @@ class Csound:
             channel: channel number
             sample: sample value
 
+        .. note:: Not present in csound 7
         """
+        _notPresentInCsound7()
         libcsound.csoundAddSpinSample(self.cs, frame, channel, sample)
 
     def setSpinSample(self, frame: int, channel: int, sample: float):
@@ -1103,7 +1288,10 @@ class Csound:
             frame: frame number
             channel: channel number
             sample: sample value
+
+        .. note:: Not present in csound 7
         """
+        _notPresentInCsound7()
         libcsound.csoundSetSpinSample(self.cs, frame, channel, sample)
 
     def spout(self) -> np.ndarray:
@@ -1122,19 +1310,34 @@ class Csound:
         Only ever makes sense after calling :py:meth:`performKsmps()`. The
         *frame* and *channel* must be in bounds relative to :py:meth:`ksmps()`
         and :py:meth:`nchnls()`.
+
+        .. note:: Not present in csound 7. Use :meth:`~Csound.spout`
         """
+        _notPresentInCsound7()
         return libcsound.csoundGetSpoutSample(self.cs, frame, channel)
 
     def rtRecordUserData(self) -> ct.c_void_p:
-        """Returns pointer to user data pointer for real time audio input."""
+        """Returns pointer to user data pointer for real time audio input.
+
+        .. note:: Not present in csound 7
+        """
+        _notPresentInCsound7()
         return libcsound.csoundGetRtRecordUserData(self.cs)
 
     def rtPlaydUserData(self) -> ct.c_void_p:
-        """Returns pointer to user data pointer for real time audio output."""
+        """Returns pointer to user data pointer for real time audio output.
+
+        .. note:: Not present in csound 7
+        """
+        _notPresentInCsound7()
         return libcsound.csoundGetRtPlayUserData(self.cs)
 
     def setHostImplementedAudioIO(self, state: bool, bufSize: int = 0):
         """Sets user handling of sound I/O.
+
+        Args:
+            state: if True, will disable all default handling of sound IO
+            bufSize: buffer size
 
         Calling this function with a :code:`True` *state* value between creation
         of the Csound object and the start of performance will disable all
@@ -1145,15 +1348,23 @@ class Csound:
         If *bufSize* is greater than zero, the buffer size (-b) will be
         set to the integer multiple of :py:meth:`ksmps()` that is nearest to the
         value specified.
+
+        .. note:: This method changed its name in csound 7 to ``setHostAudioIO``
         """
         libcsound.csoundSetHostImplementedAudioIO(self.cs, ct.c_int(int(state)), bufSize)
 
     def audioDevList(self, isOutput: bool) -> list[AudioDevice]:
         """Returns a list of available input or output audio devices.
 
+        Args:
+            isOutput: True for listing output devices, False for input
+
+        Returns:
+            a list of :class:`AudioDevice`
+
         Each item in the list is a dictionnary representing a device. The
-        dictionnary keys are *device_name*, *device_id*, *rt_module* (value
-        type string), *max_nchnls* (value type int), and *isOutput* (value
+        dictionnary keys are *deviceName*, *deviceId*, *rtModule* (value
+        type string), *maxNchnls* (value type int), and *isOutput* (value
         type boolean).
 
         Must be called after an orchestra has been compiled
@@ -1178,27 +1389,45 @@ class Csound:
         Args:
             function: a function of the form ``(void, CsoundRtAudioParams*) -> int``
 
+        .. note:: not implemented in csound 7
         """
+        _notPresentInCsound7()
         self.playOpenCbRef = PLAYOPENFUNC(function)
         libcsound.csoundSetPlayopenCallback(self.cs, self.playOpenCbRef)
 
     def setRtPlayCallback(self, function: Callable) -> None:
-        """Sets a callback for performing real-time audio playback."""
+        """Sets a callback for performing real-time audio playback.
+
+        .. note:: not implemented in csound 7
+        """
+        _notPresentInCsound7()
         self.rtPlayCbRef = RTPLAYFUNC(function)
         libcsound.csoundSetRtplayCallback(self.cs, self.rtPlayCbRef)
 
     def setRecordOpenCallback(self, function: Callable) -> None:
-        """Sets a callback for opening real-time audio recording."""
+        """Sets a callback for opening real-time audio recording.
+
+        .. note:: not implemented in csound 7
+        """
+        _notPresentInCsound7()
         self.recordOpenCbRef = RECORDOPENFUNC(function)
         libcsound.csoundSetRecopenCallback(self.cs, self.recordOpenCbRef)
 
     def setRtRecordCallback(self, function: Callable) -> None:
-        """Sets a callback for performing real-time audio recording."""
+        """Sets a callback for performing real-time audio recording.
+
+        .. note:: not implemented in csound 7
+        """
+        _notPresentInCsound7()
         self.rtRecordCbRef = RTRECORDFUNC(function)
         libcsound.csoundSetRtrecordCallback(self.cs, self.rtRecordCbRef)
 
     def setRtCloseCallback(self, function):
-        """Sets a callback for closing real-time audio playback and recording."""
+        """Sets a callback for closing real-time audio playback and recording.
+
+        .. note:: not implemented in csound 7
+        """
+        _notPresentInCsound7()
         self.rtCloseCbRef = RTCLOSEFUNC(function)
         libcsound.csoundSetRtcloseCallback(self.cs, self.rtCloseCbRef)
 
@@ -1212,11 +1441,11 @@ class Csound:
         libcsound.csoundSetAudioDeviceListCallback(self.cs, self.audioDevListCbRef)
 
     #Realtime MIDI I/O
-    def setMIDIModule(self, module: str) -> None:
+    def setMidiModule(self, module: str) -> None:
         """Sets the current MIDI IO module."""
         libcsound.csoundSetMIDIModule(self.cs, cstring(module))
 
-    def setHostImplementedMIDIIO(self, state: bool) -> None:
+    def setHostImplementedMidiIO(self, state: bool) -> None:
         """Called with *state* :code:`True` if the host is implementing via callbacks."""
         libcsound.csoundSetHostImplementedMIDIIO(self.cs, ct.c_int(state))
 
@@ -2900,19 +3129,16 @@ class CsoundPerformanceThread:
         """Stops recording and closes audio file."""
         libcspt.CsoundPTstopRecord(self.cpt)
 
-    def scoreEvent(self, absp2mode: int, kind: str, pfields):
+    def scoreEvent(self, absp2mode: int, kind: str, pfields: Sequence[float] | np.ndarray):
         """
         Sends a score event.
 
-        The event has type *kind* (e.g. 'i' for a note event).
-        *pFields* is tuple, a list, or an ndarray of MYFLTs with all the pfields
-        for this event, starting with the p1 value specified in *pFields[0]*.
-        If *absp2mode* is non-zero, the start time of the event is measured
-        from the beginning of performance, instead of the default of relative
-        to the current time.
+        Args:
+            absp2mode: if non-zero, the start time of the event is measured from
+                the beginning of performance, instead of relative to the current time
+            kind: the kind of event, one of 'i', 'f', 'e'
+            pfields: pfields of the event, starting with p1
 
-        .. note:: this method is NOT compatible with csound7, use :meth:`Csound.event`
-            instead
         """
         p = np.array(pfields).astype(MYFLT)
         ptr = p.ctypes.data_as(ct.POINTER(MYFLT))
