@@ -17,7 +17,7 @@ version: 2
 #   setup_py_install: true
 
 build:
-  os: ubuntu-latest
+  os: ubuntu-lts-latest
   tools:
     python: "3.11"
     # You can also specify other tool versions:
