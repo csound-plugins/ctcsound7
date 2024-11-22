@@ -27,14 +27,13 @@ jobs:
       - name: linux setup csound 7
         if: runner.os == 'linux' && ${{ matrix.csound-branch }} == 'develop'
         run: |
-            sudo apt build-dep csound
-            sudo apt-get install cmake
+            sudo apt-get install bison cmake flex libasound2-dev libcunit1-dev libjack-dev libportmidi-dev libsamplerate0-dev libsndfile1-dev portaudio19-dev
             mkdir build
             cd build
             cmake ..
             cmake --build . --parallel
             cmake --install .
-            
+
 
       - name: macos - install csound 6
         if: runner.os == 'macOS' && ${{ matrix.csound-branch }} == 'csound6'
@@ -52,7 +51,7 @@ jobs:
         run: |
             brew install --HEAD csound
             csound --version
-                  
+
       - name: windows setup csound 6
         if: runner.os == 'windows' && ${{ matrix.csound-branch }} == 'csound6'
         run: |
@@ -78,12 +77,11 @@ jobs:
         run: |
           pip install ctcsound7
 
-      - name: test 
+      - name: test
         run: |
           cd test
           python test1.py
-              
+
       #- uses: actions/upload-artifact@v3
       #  with:
       #    path: test/*.wav
-
