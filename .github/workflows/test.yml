@@ -19,7 +19,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: linux setup csound6
-        if: runner.os == 'linux' && ${{ matrix.csound-branch }} == 'csound6'
+        if: runner.os == 'linux' && matrix.csound-branch == 'csound6'
         run: |
           sudo apt install csound libcsnd-dev
           csound --version
@@ -46,13 +46,13 @@ jobs:
           cd ..
 
       - name: macos setup csound 7
-        if: runner.os == 'linux' && ${{ matrix.csound-branch }} == 'develop'
+        if: runner.os == 'macOS' && matrix.csound-branch == 'develop'
         run: |
           brew install --HEAD csound
           csound --version
 
       - name: windows setup csound 6
-        if: runner.os == 'windows' && ${{ matrix.csound-branch }} == 'csound6'
+        if: runner.os == 'windows' && matrix.csound-branch == 'csound6'
         run: |
           curl -L -o csound-binaries.zip https://github.com/csound/csound/releases/download/6.18.1/Csound-6.18.1-windows-x64-binaries.zip
           Expand-Archive csound-binaries.zip -DestinationPath "C:/Program Files/csound-binaries"
