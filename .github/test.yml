@@ -1,0 +1,89 @@
+on: [push]
+
+jobs:
+  alltest:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ "windows-latest", "ubuntu-latest", "macos-latest" ]
+        python-version: [ "3.9", "3.11", "3.12" ]
+        install-method: [ "git" ]
+        csound-branch: ["csound6"]
+      fail-fast: false
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: linux setup csound6
+        if: runner.os == 'linux' && ${{ matrix.csound-branch }} == 'csound6'
+        run: |
+          sudo apt install csound csound libcsnd-dev
+          csound --version
+
+      - name: linux setup csound 7
+        if: runner.os == 'linux' && ${{ matrix.csound-branch }} == 'develop'
+        run: |
+            sudo apt build-dep csound
+            sudo apt-get install cmake
+            mkdir build
+            cd build
+            cmake ..
+            cmake --build . --parallel
+            cmake --install .
+            
+
+      - name: macos - install csound 6
+        if: runner.os == 'macOS' && ${{ matrix.csound-branch }} == 'csound6'
+        run: |
+          curl -L -o csound6.18.dmg https://github.com/csound/csound/releases/download/6.18.1/Csound-MacOS-universal-6.18.1.dmg
+          brew install p7zip
+          7z x csound6.18.dmg
+          cd Csound-universal-6.18.1
+          sudo installer -pkg csound-MacOS-universal-6.18.1.pkg -target /
+          csound --version
+          cd ..
+
+      - name: macos setup csound 7
+        if: runner.os == 'linux' && ${{ matrix.csound-branch }} == 'develop'
+        run: |
+            brew install --HEAD csound
+            csound --version
+                  
+      - name: windows setup csound 6
+        if: runner.os == 'windows' && ${{ matrix.csound-branch }} == 'csound6'
+        run: |
+          curl -L -o csound-binaries.zip https://github.com/csound/csound/releases/download/6.18.1/Csound-6.18.1-windows-x64-binaries.zip
+          Expand-Archive csound-binaries.zip -DestinationPath "C:/Program Files/csound-binaries"
+          ls -r "C:/Program Files/csound-binaries"
+
+          "C:/Program Files/csound-binaries/build/Release" | Out-File -FilePath $env:GITHUB_PATH -Append
+          [Environment]::SetEnvironmentVariable("PATH", $Env:PATH + ";C:/Program Files/csound-binaries/build/Release", [EnvironmentVariableTarget]::Machine)
+          $Env:Path = $Env:Path + ";C:/Program Files/csound-binaries/build/Release"
+          echo "$PATH"
+
+          # Write-Output $Env:PATH
+          csound.exe --version
+
+      - name: install from repo
+        if: ${{ matrix.install-method == 'git' }}
+        run: |
+          pip install .
+
+      - name: install from pip
+        if: ${{ matrix.install-method == 'pip' }}
+        run: |
+          pip install ctcsound7
+
+      - name: test 
+        run: |
+          cd test
+          python test1.py
+              
+      #- uses: actions/upload-artifact@v3
+      #  with:
+      #    path: test/*.wav
+
