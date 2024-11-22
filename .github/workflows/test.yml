@@ -5,9 +5,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ "windows-latest", "ubuntu-latest", "macos-latest" ]
-        python-version: [ "3.9", "3.11", "3.12" ]
-        install-method: [ "git" ]
+        os: ["windows-latest", "ubuntu-latest", "macos-latest"]
+        python-version: ["3.9", "3.11", "3.12"]
+        install-method: ["git"]
         csound-branch: ["csound6"]
       fail-fast: false
 
@@ -21,22 +21,21 @@ jobs:
       - name: linux setup csound6
         if: runner.os == 'linux' && ${{ matrix.csound-branch }} == 'csound6'
         run: |
-          sudo apt install csound csound libcsnd-dev
+          sudo apt install csound libcsnd-dev
           csound --version
 
       - name: linux setup csound 7
-        if: runner.os == 'linux' && ${{ matrix.csound-branch }} == 'develop'
+        if: runner.os == 'linux' && matrix.csound-branch == 'develop'
         run: |
-            sudo apt-get install bison cmake flex libasound2-dev libcunit1-dev libjack-dev libportmidi-dev libsamplerate0-dev libsndfile1-dev portaudio19-dev
-            mkdir build
-            cd build
-            cmake ..
-            cmake --build . --parallel
-            cmake --install .
-
+          sudo apt-get install bison cmake flex libasound2-dev libcunit1-dev libjack-dev libportmidi-dev libsamplerate0-dev libsndfile1-dev portaudio19-dev
+          mkdir build
+          cd build
+          cmake ..
+          cmake --build . --parallel
+          cmake --install .
 
       - name: macos - install csound 6
-        if: runner.os == 'macOS' && ${{ matrix.csound-branch }} == 'csound6'
+        if: runner.os == 'macOS' && matrix.csound-branch == 'csound6'
         run: |
           curl -L -o csound6.18.dmg https://github.com/csound/csound/releases/download/6.18.1/Csound-MacOS-universal-6.18.1.dmg
           brew install p7zip
@@ -49,8 +48,8 @@ jobs:
       - name: macos setup csound 7
         if: runner.os == 'linux' && ${{ matrix.csound-branch }} == 'develop'
         run: |
-            brew install --HEAD csound
-            csound --version
+          brew install --HEAD csound
+          csound --version
 
       - name: windows setup csound 6
         if: runner.os == 'windows' && ${{ matrix.csound-branch }} == 'csound6'
