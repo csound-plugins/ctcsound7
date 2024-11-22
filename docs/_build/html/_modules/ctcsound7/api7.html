@@ -251,9 +251,6 @@
 <span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">_t</span>
 
 
-<span class="n">_BUILDING_DOCS</span> <span class="o">=</span> <span class="s1">&#39;sphinx&#39;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span>
-
-
 <span class="k">class</span> <span class="nc">CsoundParams</span><span class="p">(</span><span class="n">ct</span><span class="o">.</span><span class="n">Structure</span><span class="p">):</span>
     <span class="n">_fields_</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;debug_mode&quot;</span><span class="p">,</span> <span class="n">ct</span><span class="o">.</span><span class="n">c_int32</span><span class="p">),</span>         <span class="c1"># debug mode, 0 or 1</span>
                 <span class="p">(</span><span class="s2">&quot;buffer_frames&quot;</span><span class="p">,</span> <span class="n">ct</span><span class="o">.</span><span class="n">c_int32</span><span class="p">),</span>      <span class="c1"># number of frames in in/out buffers</span>
@@ -605,7 +602,7 @@
     <span class="n">libcspt</span><span class="o">.</span><span class="n">csoundPerformanceThreadFlushMessageQueue</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">CSOUNDPERFTHREAD_p</span><span class="p">]</span>
 
 
-<span class="k">if</span> <span class="ow">not</span> <span class="n">_BUILDING_DOCS</span><span class="p">:</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">BUILDING_DOCS</span><span class="p">:</span>
     <span class="n">libcsound</span><span class="p">,</span> <span class="n">libcsoundpath</span> <span class="o">=</span> <span class="n">_dll</span><span class="o">.</span><span class="n">csoundDLL</span><span class="p">()</span>
     <span class="n">libcspt</span> <span class="o">=</span> <span class="n">libcsound</span>
     <span class="n">_declareAPI</span><span class="p">(</span><span class="n">libcsound</span><span class="p">,</span> <span class="n">libcspt</span><span class="p">)</span>
@@ -2648,13 +2645,25 @@
     <span class="c1">#</span>
 <div class="viewcode-block" id="Csound.createCircularBuffer">
 <a class="viewcode-back" href="../../csound7.html#ctcsound7.api7.Csound.createCircularBuffer">[docs]</a>
-    <span class="k">def</span> <span class="nf">createCircularBuffer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">numelem</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">elemsize</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ct</span><span class="o">.</span><span class="n">c_void_p</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a circular buffer with numelem number of elements.</span>
+    <span class="k">def</span> <span class="nf">createCircularBuffer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">numelem</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">elemsize</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ct</span><span class="o">.</span><span class="n">c_void_p</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a circular buffer with *numelem* number of elements.</span>
 
-<span class="sd">        The element&#39;s size is set from elemsize. It should be used like::</span>
+<span class="sd">        Args:</span>
+<span class="sd">            numelem: number of elements in the buffer</span>
+<span class="sd">            elemsize: size of each element, in bytes. Defaults to the size of MYFLT</span>
 
-<span class="sd">            rb = cs.create_circular_buffer(1024, cs.size_of_MYFLT())</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            the circular buffer, as an opaque pointer</span>
+
+<span class="sd">        The element&#39;s size is set from *elemsize*. It should be used like::</span>
+
+<span class="sd">            &gt;&gt;&gt; cs = Csound()</span>
+<span class="sd">            &gt;&gt;&gt; ...</span>
+<span class="sd">            &gt;&gt;&gt; circularbuf = cs.createCircularBuffer(1024, cs.sizeOfMYFLT())</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">elemsize</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">elemsize</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sizeOfMYFLT</span><span class="p">()</span>
+
         <span class="k">return</span> <span class="n">libcsound</span><span class="o">.</span><span class="n">csoundCreateCircularBuffer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cs</span><span class="p">,</span> <span class="n">numelem</span><span class="p">,</span> <span class="n">elemsize</span><span class="p">)</span></div>
 
 
@@ -2669,7 +2678,8 @@
 <span class="sd">                where buffer contents will be read into</span>
 <span class="sd">            items: number of samples to be read</span>
 
-<span class="sd">        Returns the actual number of items read (0 &lt;= n &lt;= items).</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            the actual number of items read (0 &lt;= n &lt;= items).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">out</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">numitems</span><span class="p">:</span>
             <span class="k">return</span> <span class="mi">0</span>
@@ -2852,6 +2862,20 @@
 <span class="sd">    that ctcsound.compile_() was called successfully before creating</span>
 <span class="sd">    the performance thread. Once the playback is stopped for one of the above</span>
 <span class="sd">    mentioned reasons, the performance thread returns.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        from ctcsound7 import *</span>
+<span class="sd">        cs = Csound(...)</span>
+<span class="sd">        ...</span>
+<span class="sd">        perfthread = CsoundPerformanceThread(cs.csound())</span>
+
+<span class="sd">    Or simply::</span>
+
+<span class="sd">        perfthread = cs.performanceThread()</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">csp</span><span class="p">:</span> <span class="n">ct</span><span class="o">.</span><span class="n">c_void_p</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cpt</span> <span class="o">=</span> <span class="n">libcspt</span><span class="o">.</span><span class="n">csoundCreatePerformanceThread</span><span class="p">(</span><span class="n">csp</span><span class="p">)</span>
@@ -2881,6 +2905,8 @@
 <span class="sd">        Args:</span>
 <span class="sd">            function: a function of the form ``(csound: void, data: Any) -&gt; None``</span>
 <span class="sd">            data: can be anything</span>
+
+<span class="sd">        TODO: how is the callback called? How does the callback access data?</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">libcspt</span><span class="o">.</span><span class="n">csoundPerformanceThreadSetProcessCB</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cpt</span><span class="p">,</span> <span class="n">PROCESSFUNC</span><span class="p">(</span><span class="n">function</span><span class="p">),</span> <span class="n">ct</span><span class="o">.</span><span class="n">byref</span><span class="p">(</span><span class="n">data</span><span class="p">))</span></div>
 

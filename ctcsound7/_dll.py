@@ -2,6 +2,7 @@ import ctypes as ct
 import ctypes.util
 import sys
 from functools import cache
+from .common import BUILDING_DOCS
 
 
 def csoundLibraryName() -> str:
@@ -21,6 +22,9 @@ _libcsoundpath = ''
 
 
 def csoundDLL() -> tuple[ct.CDLL, str]:
+    if BUILDING_DOCS:
+        raise RuntimeError("Cannot access the dll while building docs")
+
     global _libcsound
     global _libcsoundpath
 

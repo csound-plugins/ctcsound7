@@ -6,6 +6,9 @@ from dataclasses import dataclass
 from typing import Sequence
 
 
+BUILDING_DOCS = 'sphinx' in sys.modules
+
+
 MYFLT = ct.c_double
 
 #

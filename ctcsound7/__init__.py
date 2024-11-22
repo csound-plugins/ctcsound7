@@ -33,12 +33,9 @@ import ctypes.util
 import numpy as np
 import sys
 from . import _dll
-from .common import MYFLT, string128, cstring, DEFMSGFUNC
+from .common import MYFLT, string128, cstring, DEFMSGFUNC, BUILDING_DOCS
 
-_BUILDING_DOCS = 'sphinx' in sys.modules
-
-
-if not _BUILDING_DOCS:
+if not BUILDING_DOCS:
     libcsound, libcsoundPath = _dll.csoundDLL()
     VERSION = libcsound.csoundGetVersion()
     if VERSION >= 7000:
@@ -51,7 +48,7 @@ if not _BUILDING_DOCS:
     else:
         from .api7 import *
 else:
-    print("------------- building documentation -------------")
+    print("------------- Building documentation -------------")
     VERSION = 0
     from . import api6
     from . import api7

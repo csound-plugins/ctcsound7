@@ -12,9 +12,6 @@ from . import _dll
 import typing as _t
 
 
-_BUILDING_DOCS = 'sphinx' in sys.modules
-
-
 class CsoundParams(ct.Structure):
     _fields_ = [("debug_mode", ct.c_int32),         # debug mode, 0 or 1
                 ("buffer_frames", ct.c_int32),      # number of frames in in/out buffers
@@ -366,7 +363,7 @@ def _declareAPI(libcsound, libcspt):
     libcspt.csoundPerformanceThreadFlushMessageQueue.argtypes = [CSOUNDPERFTHREAD_p]
 
 
-if not _BUILDING_DOCS:
+if not BUILDING_DOCS:
     libcsound, libcsoundpath = _dll.csoundDLL()
     libcspt = libcsound
     _declareAPI(libcsound, libcspt)
@@ -2027,13 +2024,25 @@ class Csound:
     #
     # Circular Buffer Functions
     #
-    def createCircularBuffer(self, numelem: int, elemsize: int) -> ct.c_void_p:
-        """Creates a circular buffer with numelem number of elements.
+    def createCircularBuffer(self, numelem: int, elemsize: int = 0) -> ct.c_void_p:
+        """Creates a circular buffer with *numelem* number of elements.
 
-        The element's size is set from elemsize. It should be used like::
+        Args:
+            numelem: number of elements in the buffer
+            elemsize: size of each element, in bytes. Defaults to the size of MYFLT
 
-            rb = cs.create_circular_buffer(1024, cs.size_of_MYFLT())
+        Returns:
+            the circular buffer, as an opaque pointer
+
+        The element's size is set from *elemsize*. It should be used like::
+
+            >>> cs = Csound()
+            >>> ...
+            >>> circularbuf = cs.createCircularBuffer(1024, cs.sizeOfMYFLT())
         """
+        if elemsize == 0:
+            elemsize = self.sizeOfMYFLT()
+
         return libcsound.csoundCreateCircularBuffer(self.cs, numelem, elemsize)
 
     def readCircularBuffer(self, buffer: ct.c_void_p, out: np.ndarray, numitems: int) -> int:
@@ -2045,7 +2054,8 @@ class Csound:
                 where buffer contents will be read into
             items: number of samples to be read
 
-        Returns the actual number of items read (0 <= n <= items).
+        Returns:
+            the actual number of items read (0 <= n <= items).
         """
         if len(out) < numitems:
             return 0
@@ -2200,6 +2210,20 @@ class CsoundPerformanceThread:
     that ctcsound.compile_() was called successfully before creating
     the performance thread. Once the playback is stopped for one of the above
     mentioned reasons, the performance thread returns.
+
+    Example
+    -------
+
+    .. code-block:: python
+
+        from ctcsound7 import *
+        cs = Csound(...)
+        ...
+        perfthread = CsoundPerformanceThread(cs.csound())
+
+    Or simply::
+
+        perfthread = cs.performanceThread()
     """
     def __init__(self, csp: ct.c_void_p):
         self.cpt = libcspt.csoundCreatePerformanceThread(csp)
@@ -2221,6 +2245,8 @@ class CsoundPerformanceThread:
         Args:
             function: a function of the form ``(csound: void, data: Any) -> None``
             data: can be anything
+
+        TODO: how is the callback called? How does the callback access data?
         """
         libcspt.csoundPerformanceThreadSetProcessCB(self.cpt, PROCESSFUNC(function), ct.byref(data))
 

@@ -1071,7 +1071,7 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#ctcsound7.api6.Csound.destroyMutex" title="ctcsound7.api6.Csound.destroyMutex"><code class="xref py py-obj docutils literal notranslate"><span class="pre">destroyMutex</span></code></a>(mutex)</p></td>
 <td><p>Destroys the indicated mutex object.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ctcsound7.api6.Csound.createBarrier" title="ctcsound7.api6.Csound.createBarrier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">createBarrier</span></code></a>(max_)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ctcsound7.api6.Csound.createBarrier" title="ctcsound7.api6.Csound.createBarrier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">createBarrier</span></code></a>(maxthreads)</p></td>
 <td><p>Creates a Thread Barrier.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ctcsound7.api6.Csound.destroyBarrier" title="ctcsound7.api6.Csound.destroyBarrier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">destroyBarrier</span></code></a>(barrier)</p></td>
@@ -1110,8 +1110,8 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#ctcsound7.api6.Csound.randomSeedFromTime" title="ctcsound7.api6.Csound.randomSeedFromTime"><code class="xref py py-obj docutils literal notranslate"><span class="pre">randomSeedFromTime</span></code></a>()</p></td>
 <td><p>Returns a 32-bit unsigned integer to be used as seed from current time.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ctcsound7.api6.Csound.setLanguage" title="ctcsound7.api6.Csound.setLanguage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setLanguage</span></code></a>(lang_code)</p></td>
-<td><p>Sets language to <em>lang_code</em>.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ctcsound7.api6.Csound.setLanguage" title="ctcsound7.api6.Csound.setLanguage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setLanguage</span></code></a>(langcode)</p></td>
+<td><p>Sets language to <em>langcode</em>.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#ctcsound7.api6.Csound.env" title="ctcsound7.api6.Csound.env"><code class="xref py py-obj docutils literal notranslate"><span class="pre">env</span></code></a>(name[, withCsoundInstance])</p></td>
 <td><p>Gets the value of environment variable <em>name</em>.</p></td>
@@ -1141,7 +1141,7 @@
 <td><p>Gets utility description.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ctcsound7.api6.Csound.rand31" title="ctcsound7.api6.Csound.rand31"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rand31</span></code></a>(seed)</p></td>
-<td><p>Simple linear congruential random number generator.</p></td>
+<td><p>Simple linear congruential random number generator</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#ctcsound7.api6.Csound.seedRandMT" title="ctcsound7.api6.Csound.seedRandMT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">seedRandMT</span></code></a>(initKey)</p></td>
 <td><p>Initializes Mersenne Twister (MT19937) random number generator.</p></td>
@@ -1149,7 +1149,7 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#ctcsound7.api6.Csound.randMT" title="ctcsound7.api6.Csound.randMT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">randMT</span></code></a>(state)</p></td>
 <td><p>Returns next random number from MT19937 generator.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ctcsound7.api6.Csound.createCircularBuffer" title="ctcsound7.api6.Csound.createCircularBuffer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">createCircularBuffer</span></code></a>(numelem, elemsize)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ctcsound7.api6.Csound.createCircularBuffer" title="ctcsound7.api6.Csound.createCircularBuffer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">createCircularBuffer</span></code></a>(numelem[, elemsize])</p></td>
 <td><p>Creates a circular buffer with <em>numelem</em> number of elements.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ctcsound7.api6.Csound.readCircularBuffer" title="ctcsound7.api6.Csound.readCircularBuffer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">readCircularBuffer</span></code></a>(buffer, out, numitems)</p></td>
@@ -3698,6 +3698,14 @@ behavior.</p>
 <dt class="sig sig-object py" id="ctcsound7.api6.Csound.lockMutex">
 <span class="sig-name descname"><span class="pre">lockMutex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mutex</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctcsound7/api6.html#Csound.lockMutex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ctcsound7.api6.Csound.lockMutex" title="Link to this definition">#</a></dt>
 <dd><p>Acquires the indicated mutex object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mutex</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">c_void_p</span></code></span>) – the mutex, as returned by <a class="reference internal" href="#ctcsound7.api6.Csound.createMutex" title="ctcsound7.api6.Csound.createMutex"><code class="xref py py-meth docutils literal notranslate"><span class="pre">createMutex()</span></code></a></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
 <p>If it is already in use by another thread, the function waits until
 the mutex is released by the other thread.</p>
 </dd></dl>
@@ -3706,48 +3714,67 @@ the mutex is released by the other thread.</p>
 <dt class="sig sig-object py" id="ctcsound7.api6.Csound.lockMutexNoWait">
 <span class="sig-name descname"><span class="pre">lockMutexNoWait</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mutex</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctcsound7/api6.html#Csound.lockMutexNoWait"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ctcsound7.api6.Csound.lockMutexNoWait" title="Link to this definition">#</a></dt>
 <dd><p>Acquire the indicated mutex object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mutex</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">c_void_p</span></code></span>) – the mutex, as returned by <a class="reference internal" href="#ctcsound7.api6.Csound.createMutex" title="ctcsound7.api6.Csound.createMutex"><code class="xref py py-meth docutils literal notranslate"><span class="pre">createMutex()</span></code></a></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span></p>
+</dd>
+</dl>
 <p>Returns zero, unless it is already in use by another thread, in which
 case a non-zero value is returned immediately, rather than waiting
 until the mutex becomes available.</p>
-<p>Note: this function may be unimplemented on Windows.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span></p>
-</dd>
-</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>this function may be unimplemented on Windows.</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ctcsound7.api6.Csound.unlockMutex">
 <span class="sig-name descname"><span class="pre">unlockMutex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mutex</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctcsound7/api6.html#Csound.unlockMutex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ctcsound7.api6.Csound.unlockMutex" title="Link to this definition">#</a></dt>
 <dd><p>Releases the indicated mutex object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mutex</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">c_void_p</span></code></span>) – the mutex, as returned by <a class="reference internal" href="#ctcsound7.api6.Csound.createMutex" title="ctcsound7.api6.Csound.createMutex"><code class="xref py py-meth docutils literal notranslate"><span class="pre">createMutex()</span></code></a></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
 <p>The mutex should be owned by the current thread, otherwise the
 operation of this function is undefined. A recursive mutex needs
 to be unlocked as many times as it was locked previously.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ctcsound7.api6.Csound.destroyMutex">
 <span class="sig-name descname"><span class="pre">destroyMutex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mutex</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctcsound7/api6.html#Csound.destroyMutex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ctcsound7.api6.Csound.destroyMutex" title="Link to this definition">#</a></dt>
 <dd><p>Destroys the indicated mutex object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mutex</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">c_void_p</span></code></span>) – the mutex, as returned by <a class="reference internal" href="#ctcsound7.api6.Csound.createMutex" title="ctcsound7.api6.Csound.createMutex"><code class="xref py py-meth docutils literal notranslate"><span class="pre">createMutex()</span></code></a></p>
+</dd>
+</dl>
 <p>Destroying a mutex that is currently owned by a thread results
 in undefined behavior.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ctcsound7.api6.Csound.createBarrier">
-<span class="sig-name descname"><span class="pre">createBarrier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctcsound7/api6.html#Csound.createBarrier"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ctcsound7.api6.Csound.createBarrier" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">createBarrier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maxthreads</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctcsound7/api6.html#Csound.createBarrier"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ctcsound7.api6.Csound.createBarrier" title="Link to this definition">#</a></dt>
 <dd><p>Creates a Thread Barrier.</p>
-<p>Max value parameter should be equal to the number of child threads
-using the barrier plus one for the master thread.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">c_void_p</span></code> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>maxthreads</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – should be equal to the number of child threads
+using the barrier plus one for the master thread.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">c_void_p</span></code> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the barrier as an opaque pointer, or None if failed</p>
 </dd>
 </dl>
 </dd></dl>
@@ -3767,12 +3794,25 @@ using the barrier plus one for the master thread.</p>
 <dt class="sig sig-object py" id="ctcsound7.api6.Csound.waitBarrier">
 <span class="sig-name descname"><span class="pre">waitBarrier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">barrier</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctcsound7/api6.html#Csound.waitBarrier"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ctcsound7.api6.Csound.waitBarrier" title="Link to this definition">#</a></dt>
 <dd><p>Waits on the thread barrier.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>barrier</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">c_void_p</span></code></span>) – the barrier, as returned by <a class="reference internal" href="#ctcsound7.api6.Csound.createBarrier" title="ctcsound7.api6.Csound.createBarrier"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Csound.createBarrier()</span></code></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ctcsound7.api6.Csound.sleep">
 <span class="sig-name descname"><span class="pre">sleep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">milliseconds</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctcsound7/api6.html#Csound.sleep"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ctcsound7.api6.Csound.sleep" title="Link to this definition">#</a></dt>
 <dd><p>Waits for at least the specified number of <em>milliseconds</em>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>milliseconds</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – time to sleep, in milliseconds</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
 <p>It yields the CPU to other threads.</p>
 </dd></dl>
 
@@ -3902,9 +3942,9 @@ On error, a negative value is returned.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ctcsound7.api6.Csound.setLanguage">
-<span class="sig-name descname"><span class="pre">setLanguage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lang_code</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctcsound7/api6.html#Csound.setLanguage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ctcsound7.api6.Csound.setLanguage" title="Link to this definition">#</a></dt>
-<dd><p>Sets language to <em>lang_code</em>.</p>
-<p><em>lang_code</em> can be for example CSLANGUAGE_ENGLISH_UK or
+<span class="sig-name descname"><span class="pre">setLanguage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">langcode</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctcsound7/api6.html#Csound.setLanguage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ctcsound7.api6.Csound.setLanguage" title="Link to this definition">#</a></dt>
+<dd><p>Sets language to <em>langcode</em>.</p>
+<p><em>langcode</em> can be for example CSLANGUAGE_ENGLISH_UK or
 CSLANGUAGE_FRENCH or many others, (see n_getstr.h for the list of
 languages). This affects all Csound instances running in the address
 space of the current process. The special language code
@@ -3919,26 +3959,50 @@ variable.</p>
 <dt class="sig sig-object py" id="ctcsound7.api6.Csound.env">
 <span class="sig-name descname"><span class="pre">env</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">withCsoundInstance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctcsound7/api6.html#Csound.env"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ctcsound7.api6.Csound.env" title="Link to this definition">#</a></dt>
 <dd><p>Gets the value of environment variable <em>name</em>.</p>
-<p>The searching order is: local environment of Csound (if
-<em>withCsoundInstance</em> is <code class="code docutils literal notranslate"><span class="pre">True</span></code>), variables set with
-<a class="reference internal" href="#ctcsound7.api6.Csound.setGlobalEnv" title="ctcsound7.api6.Csound.setGlobalEnv"><code class="xref py py-meth docutils literal notranslate"><span class="pre">setGlobalEnv()</span></code></a>,
-and system environment variables. If <em>withCsoundInstance</em> is
-<code class="code docutils literal notranslate"><span class="pre">True</span></code>, should be called after <a class="reference internal" href="#ctcsound7.api6.Csound.compile_" title="ctcsound7.api6.Csound.compile_"><code class="xref py py-meth docutils literal notranslate"><span class="pre">compile_()</span></code></a>.</p>
-<p>Return value is <code class="code docutils literal notranslate"><span class="pre">None</span></code> if the variable is not set.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – the name of the variable</p></li>
+<li><p><strong>withCsoundInstance</strong> – if True, the local environment of the
+current instance is taken into account. Should be called
+after <a class="reference internal" href="#ctcsound7.api6.Csound.compile_" title="ctcsound7.api6.Csound.compile_"><code class="xref py py-meth docutils literal notranslate"><span class="pre">compile_()</span></code></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the value of the variable, or None if it is not set</p>
 </dd>
 </dl>
+<p>The searching order is:</p>
+<ol class="arabic simple">
+<li><p>Local environment of Csound (if <em>withCsoundInstance</em> is <code class="code docutils literal notranslate"><span class="pre">True</span></code>)</p></li>
+<li><p>Variables set with <a class="reference internal" href="#ctcsound7.api6.Csound.setGlobalEnv" title="ctcsound7.api6.Csound.setGlobalEnv"><code class="xref py py-meth docutils literal notranslate"><span class="pre">setGlobalEnv()</span></code></a>,</p></li>
+<li><p>System environment variables.</p></li>
+</ol>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ctcsound7.api6.Csound.setGlobalEnv">
 <span class="sig-name descname"><span class="pre">setGlobalEnv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctcsound7/api6.html#Csound.setGlobalEnv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ctcsound7.api6.Csound.setGlobalEnv" title="Link to this definition">#</a></dt>
 <dd><p>Sets the global value of environment variable <em>name</em> to <em>value</em>.</p>
-<p>The variable is deleted if <em>value</em> is <code class="code docutils literal notranslate"><span class="pre">None</span></code>. It is not safe to
-call this function while any Csound instances are active.</p>
-<p>Returns zero on success.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – variable name</p></li>
+<li><p><strong>value</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – variable value. The key: value pair is deleted if the
+value is <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>zero on success, an error code otherwise</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It is not safe to call this function while any Csound instances are active.</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -3957,12 +4021,18 @@ CSOUND_MEMORY if there is not enough memory.</p>
 <dt class="sig sig-object py" id="ctcsound7.api6.Csound.queryGlobalVariable">
 <span class="sig-name descname"><span class="pre">queryGlobalVariable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctcsound7/api6.html#Csound.queryGlobalVariable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ctcsound7.api6.Csound.queryGlobalVariable" title="Link to this definition">#</a></dt>
 <dd><p>Gets pointer to space allocated with the name <em>name</em>.</p>
-<p>Return <code class="code docutils literal notranslate"><span class="pre">None</span></code> if the specified <em>name</em> is not defined.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">c_void_p</span></code> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>an opaque pointer, or <cite>None</cite> if the variable is undefined</p>
+</dd>
 </dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Not implemented in csound 7</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -3971,12 +4041,12 @@ CSOUND_MEMORY if there is not enough memory.</p>
 <dd><p>This function is the similar to :py:meth`queryGlobalVariable()`.</p>
 <p>Except the variable is assumed to exist and no error checking is done.
 Faster, but may crash or return an invalid pointer if <em>name</em> is
-not defined.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">c_void_p</span></code></span></p>
-</dd>
-</dl>
+not defined.
+:rtype: <span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">c_void_p</span></code></span></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Not implemented in csound 7</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -3985,6 +4055,10 @@ not defined.</p>
 <dd><p>Frees memory allocated for <em>name</em> and remove <em>name</em> from the database.</p>
 <p>Return value is CSOUND_SUCCESS on success, or CSOUND_ERROR if the <em>name</em>
 is not defined.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Not implemented in csound 7</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -4000,64 +4074,109 @@ Returns zero if the utility was run successfully.</p>
 <dt class="sig sig-object py" id="ctcsound7.api6.Csound.listUtilities">
 <span class="sig-name descname"><span class="pre">listUtilities</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctcsound7/api6.html#Csound.listUtilities"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ctcsound7.api6.Csound.listUtilities" title="Link to this definition">#</a></dt>
 <dd><p>Returns a list of registered utility names.</p>
-<p>The return value may be <code class="code docutils literal notranslate"><span class="pre">None</span></code> in case of an error.</p>
+<p>The return value may be <code class="code docutils literal notranslate"><span class="pre">None</span></code> in case of an error.
+:rtype: <span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Not present in csound 7</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ctcsound7.api6.Csound.utilityDescription">
 <span class="sig-name descname"><span class="pre">utilityDescription</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctcsound7/api6.html#Csound.utilityDescription"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ctcsound7.api6.Csound.utilityDescription" title="Link to this definition">#</a></dt>
 <dd><p>Gets utility description.</p>
-<p>Returns <code class="code docutils literal notranslate"><span class="pre">None</span></code> if the utility was not found, or it has no
-description, or an error occured.</p>
+<p>Returns an empty string if the utility was not found, or it has no
+description, or an error occured.
+:rtype: <span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Not present in csound 7</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ctcsound7.api6.Csound.rand31">
 <span class="sig-name descname"><span class="pre">rand31</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctcsound7/api6.html#Csound.rand31"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ctcsound7.api6.Csound.rand31" title="Link to this definition">#</a></dt>
-<dd><p>Simple linear congruential random number generator:</p>
+<dd><p>Simple linear congruential random number generator</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">seed</span> <span class="o">=</span> <span class="n">seed</span> <span class="o">*</span> <span class="mi">742938285</span> <span class="o">%</span> <span class="mi">2147483647</span>
 </pre></div>
 </div>
 <p>The initial value of <em>seed</em> must be in the range 1 to 2147483646.
 Returns the next number from the pseudo-random sequence, in the range
-1 to 2147483646.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span></p>
-</dd>
-</dl>
+1 to 2147483646.
+:rtype: <span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Not present in csound 7</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ctcsound7.api6.Csound.seedRandMT">
 <span class="sig-name descname"><span class="pre">seedRandMT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initKey</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctcsound7/api6.html#Csound.seedRandMT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ctcsound7.api6.Csound.seedRandMT" title="Link to this definition">#</a></dt>
 <dd><p>Initializes Mersenne Twister (MT19937) random number generator.</p>
-<p><em>initKey</em> can be a single int, a list of int, or an ndarray of int.
-Those int values are converted to unsigned 32 bit values and used for
-seeding.</p>
-<p>Returns a CsoundRandMTState stuct to be used by :py:meth`csoundRandMT()`.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>initKey</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]</span>) – can be a single int, a list of int Those int values are
+converted to unsigned 32 bit values and used for seeding.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">CsoundRandMTState</span></code></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>a CsoundRandMTState stuct to be used by</em> – py:meth`csoundRandMT()`.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Not present in csound 7</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ctcsound7.api6.Csound.randMT">
 <span class="sig-name descname"><span class="pre">randMT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctcsound7/api6.html#Csound.randMT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ctcsound7.api6.Csound.randMT" title="Link to this definition">#</a></dt>
 <dd><p>Returns next random number from MT19937 generator.</p>
-<p>The PRNG must be initialized first by calling :py:meth`csoundSeedRandMT()`.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>state</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">CsoundRandMTState</span></code></span>) – a CsoundRandMTState as returned by <a class="reference internal" href="#ctcsound7.api6.Csound.seedRandMT" title="ctcsound7.api6.Csound.seedRandMT"><code class="xref py py-meth docutils literal notranslate"><span class="pre">seedRandMT()</span></code></a></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span></p>
+</dd>
+</dl>
+<p>The PRNG must be initialized first by calling :py:meth`seedRandMT()`.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Not present in csound 7</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ctcsound7.api6.Csound.createCircularBuffer">
-<span class="sig-name descname"><span class="pre">createCircularBuffer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">numelem</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elemsize</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctcsound7/api6.html#Csound.createCircularBuffer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ctcsound7.api6.Csound.createCircularBuffer" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">createCircularBuffer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">numelem</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elemsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctcsound7/api6.html#Csound.createCircularBuffer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ctcsound7.api6.Csound.createCircularBuffer" title="Link to this definition">#</a></dt>
 <dd><p>Creates a circular buffer with <em>numelem</em> number of elements.</p>
-<p>The element’s size is set from <em>elemsize</em>. It should be used like:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">rb</span> <span class="o">=</span> <span class="n">cs</span><span class="o">.</span><span class="n">createCircularBuffer</span><span class="p">(</span><span class="mi">1024</span><span class="p">,</span> <span class="n">cs</span><span class="o">.</span><span class="n">sizeOfMYFLT</span><span class="p">())</span>
-</pre></div>
-</div>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">c_void_p</span></code></span></p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>numelem</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – number of elements in the buffer</p></li>
+<li><p><strong>elemsize</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – size of each element, in bytes. Defaults to the size of MYFLT</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">c_void_p</span></code></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the circular buffer, as an opaque pointer</p>
 </dd>
 </dl>
+<p>The element’s size is set from <em>elemsize</em>. It should be used like:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cs</span> <span class="o">=</span> <span class="n">Csound</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="o">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">circularbuf</span> <span class="o">=</span> <span class="n">cs</span><span class="o">.</span><span class="n">createCircularBuffer</span><span class="p">(</span><span class="mi">1024</span><span class="p">,</span> <span class="n">cs</span><span class="o">.</span><span class="n">sizeOfMYFLT</span><span class="p">())</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -4128,7 +4247,10 @@ into circular buffer</p></li>
 getting data from the buffer.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>buffer</strong> – pointer to an existing circular buffer</p>
+<dd class="field-odd"><p><strong>buffer</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">c_void_p</span></code></span>) – pointer to an existing circular buffer</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -4137,6 +4259,11 @@ getting data from the buffer.</p>
 <dt class="sig sig-object py" id="ctcsound7.api6.Csound.destroyCircularBuffer">
 <span class="sig-name descname"><span class="pre">destroyCircularBuffer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctcsound7/api6.html#Csound.destroyCircularBuffer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ctcsound7.api6.Csound.destroyCircularBuffer" title="Link to this definition">#</a></dt>
 <dd><p>Frees circular buffer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -4154,23 +4281,31 @@ getting data from the buffer.</p>
 <dd class="field-odd"><p><em>a tuple (retcode</em> – int, library: void)</p>
 </dd>
 </dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Not present in csound 7</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ctcsound7.api6.Csound.closeLibrary">
 <span class="sig-name descname"><span class="pre">closeLibrary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">library</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctcsound7/api6.html#Csound.closeLibrary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ctcsound7.api6.Csound.closeLibrary" title="Link to this definition">#</a></dt>
-<dd><p>Platform-independent function to unload a shared library.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span></p>
-</dd>
-</dl>
+<dd><p>Platform-independent function to unload a shared library.
+:rtype: <span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Not present in csound 7</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ctcsound7.api6.Csound.getLibrarySymbol">
 <span class="sig-name descname"><span class="pre">getLibrarySymbol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">library</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbolName</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctcsound7/api6.html#Csound.getLibrarySymbol"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ctcsound7.api6.Csound.getLibrarySymbol" title="Link to this definition">#</a></dt>
 <dd><p>Platform-independent function to get a symbol address in a shared library.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Not present in csound 7</p>
+</div>
 </dd></dl>
 
 </dd></dl>
@@ -4191,10 +4326,21 @@ and returns.</p>
 <dd class="field-odd"><p><strong>csp</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">c_void_p</span></code></span>) – the pointer to the Csound instance</p>
 </dd>
 </dl>
+<p class="rubric">Example</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ctcsound7</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">cs</span> <span class="o">=</span> <span class="n">Csound</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="o">...</span>
+<span class="n">perfthread</span> <span class="o">=</span> <span class="n">CsoundPerformanceThread</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">csound</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>Or simply:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">perfthread</span> <span class="o">=</span> <span class="n">cs</span><span class="o">.</span><span class="n">performanceThread</span><span class="p">()</span>
+</pre></div>
+</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="ctcsound7.api6.CsoundPerformanceThread.isRunning">
 <span class="sig-name descname"><span class="pre">isRunning</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctcsound7/api6.html#CsoundPerformanceThread.isRunning"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ctcsound7.api6.CsoundPerformanceThread.isRunning" title="Link to this definition">#</a></dt>
-<dd><p>Returns <code class="code docutils literal notranslate"><span class="pre">True</span></code> if the performance thread is running, <code class="code docutils literal notranslate"><span class="pre">False</span></code> otherwise.</p>
+<dd><p>Returns True if the performance thread is running, False otherwise.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></p>
@@ -4217,6 +4363,7 @@ and returns.</p>
 <dd class="field-odd"><p><strong>function</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-class docutils literal notranslate"><span class="pre">c_void_p</span></code>], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</span>) – a function of the form <code class="docutils literal notranslate"><span class="pre">(csound:</span> <span class="pre">void)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p>
 </dd>
 </dl>
+<p>TODO: how is the callback called?</p>
 </dd></dl>
 
 <dl class="py method">
@@ -4234,11 +4381,13 @@ and returns.</p>
 <dt class="sig sig-object py" id="ctcsound7.api6.CsoundPerformanceThread.status">
 <span class="sig-name descname"><span class="pre">status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctcsound7/api6.html#CsoundPerformanceThread.status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ctcsound7.api6.CsoundPerformanceThread.status" title="Link to this definition">#</a></dt>
 <dd><p>Returns the current status.</p>
-<p>Zero if still playing, positive if the end of score was reached or
-performance was stopped, and negative if an error occured.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Zero if still playing, positive if the end of score was reached or
+performance was stopped, and negative if an error occured.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -4247,30 +4396,58 @@ performance was stopped, and negative if an error occured.</p>
 <dt class="sig sig-object py" id="ctcsound7.api6.CsoundPerformanceThread.play">
 <span class="sig-name descname"><span class="pre">play</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctcsound7/api6.html#CsoundPerformanceThread.play"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ctcsound7.api6.CsoundPerformanceThread.play" title="Link to this definition">#</a></dt>
 <dd><p>Continues performance if it was paused.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ctcsound7.api6.CsoundPerformanceThread.pause">
 <span class="sig-name descname"><span class="pre">pause</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctcsound7/api6.html#CsoundPerformanceThread.pause"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ctcsound7.api6.CsoundPerformanceThread.pause" title="Link to this definition">#</a></dt>
 <dd><p>Pauses performance (can be continued by calling <a class="reference internal" href="#ctcsound7.api6.CsoundPerformanceThread.play" title="ctcsound7.api6.CsoundPerformanceThread.play"><code class="xref py py-meth docutils literal notranslate"><span class="pre">play()</span></code></a>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ctcsound7.api6.CsoundPerformanceThread.togglePause">
 <span class="sig-name descname"><span class="pre">togglePause</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctcsound7/api6.html#CsoundPerformanceThread.togglePause"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ctcsound7.api6.CsoundPerformanceThread.togglePause" title="Link to this definition">#</a></dt>
 <dd><p>Pauses or continues performance, depending on current state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ctcsound7.api6.CsoundPerformanceThread.stop">
 <span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctcsound7/api6.html#CsoundPerformanceThread.stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ctcsound7.api6.CsoundPerformanceThread.stop" title="Link to this definition">#</a></dt>
 <dd><p>Stops performance (cannot be continued).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ctcsound7.api6.CsoundPerformanceThread.record">
 <span class="sig-name descname"><span class="pre">record</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">samplebits</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numbufs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctcsound7/api6.html#CsoundPerformanceThread.record"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ctcsound7.api6.CsoundPerformanceThread.record" title="Link to this definition">#</a></dt>
 <dd><p>Starts recording the output from Csound.</p>
+<blockquote>
+<div><dl class="simple">
+<dt>Args:</dt><dd><p>filename: the output soundfile
+samplebits: number of bits per sample (16, 24, 32)
+numbufs: number of buffers</p>
+</dd>
+</dl>
+</div></blockquote>
 <p>The sample rate and number of channels are taken directly from the
 running Csound instance.</p>
 </dd></dl>
@@ -4279,6 +4456,11 @@ running Csound instance.</p>
 <dt class="sig sig-object py" id="ctcsound7.api6.CsoundPerformanceThread.stopRecord">
 <span class="sig-name descname"><span class="pre">stopRecord</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctcsound7/api6.html#CsoundPerformanceThread.stopRecord"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ctcsound7.api6.CsoundPerformanceThread.stopRecord" title="Link to this definition">#</a></dt>
 <dd><p>Stops recording and closes audio file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -4293,6 +4475,9 @@ the beginning of performance, instead of relative to the current time</p></li>
 <li><p><strong>kind</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – the kind of event, one of ‘i’, ‘f’, ‘e’</p></li>
 <li><p><strong>pfields</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]</span>) – pfields of the event, starting with p1</p></li>
 </ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -4310,11 +4495,14 @@ the beginning of performance, instead of relative to the current time</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ctcsound7.api6.CsoundPerformanceThread.setScoreOffsetSeconds">
-<span class="sig-name descname"><span class="pre">setScoreOffsetSeconds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeVal</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctcsound7/api6.html#CsoundPerformanceThread.setScoreOffsetSeconds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ctcsound7.api6.CsoundPerformanceThread.setScoreOffsetSeconds" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">setScoreOffsetSeconds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctcsound7/api6.html#CsoundPerformanceThread.setScoreOffsetSeconds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ctcsound7.api6.CsoundPerformanceThread.setScoreOffsetSeconds" title="Link to this definition">#</a></dt>
 <dd><p>Sets the playback time pointer to the specified value (in seconds).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>time</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – playback time in seconds</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
