@@ -1721,7 +1721,7 @@ class Csound:
         self._outputChannelCallback = CHANNELFUNC(function)
         libcsound.csoundSetOutputChannelCallback(self.cs, self._outputChannelCallback)
 
-    def event(self, kind: str, pfields: _t.Sequence[float] | np.ndarray, block=True):
+    def event(self, kind: str, pfields: _t.Sequence[float] | np.ndarray, block=True) -> None:
         """
         Send a new event.
 
@@ -1731,7 +1731,8 @@ class Csound:
             block: if True, the operation is blocking. Otherwise it is
                 performed asynchronously
 
-
+        .. note:: this method does not exist in csound 6. For backwards compatibility
+            use :meth:`Csound.scoreEvent` or :meth:`Csound.scoreEventAsync`
         """
         eventtype = _scoreEventToTypenum.get(kind)
         if eventtype is None:
@@ -1739,8 +1740,7 @@ class Csound:
         p = np.asarray(pfields, dtype=MYFLT)
         ptr = p.ctypes.data_as(ct.POINTER(MYFLT))
         n_fields = ct.c_int32(p.size)
-        libcsound.csoundEvent(self.cs, ct.c_int32(eventtype), ptr, n_fields,
-            ct.c_int32(not block))
+        libcsound.csoundEvent(self.cs, ct.c_int32(eventtype), ptr, n_fields, ct.c_int32(not block))
 
     def scoreEvent(self, kind: str, pfields: _t.Sequence[float] | np.ndarray) -> int:
         """
@@ -1897,17 +1897,22 @@ class Csound:
     def scoreTime(self) -> float:
         """Returns the current score time.
 
+        Returns:
+            current time, in seconds
+
         The return value is the time in seconds since the beginning of
-        performance.
+        performance. This can be used to schedule events at absolute times
+
+        .. seealso:: :meth:`Csound.currentTimeSamples`
         """
         return libcsound.csoundGetScoreTime(self.cs)
 
     def isScorePending(self) -> bool:
         """Tells whether Csound score events are performed or not.
 
-        Independently of real-time MIDI events (see set_score_pending()).
+        Independently of real-time MIDI events (see :py:meth:`setScorePending`).
         """
-        return libcsound.csoundIsScorePending(self.cs) != 0
+        return bool(libcsound.csoundIsScorePending(self.cs))
 
     def setScorePending(self, pending: bool) -> None:
         """Sets whether Csound score events are performed or not.
@@ -1946,7 +1951,7 @@ class Csound:
     def rewindScore(self) -> None:
         """Rewinds a compiled Csound score.
 
-        It is rewinded to the time specified with set_score_offset_seconds().
+        It is rewinded to the time specified with :py:meth:`setScoreOffsetSeconds()`.
         """
         libcsound.csoundRewindScore(self.cs)
 
