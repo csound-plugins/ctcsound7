@@ -6,9 +6,9 @@ jobs:
     strategy:
       matrix:
         os: ["windows-latest", "ubuntu-latest", "macos-latest"]
-        python-version: ["3.9", "3.11", "3.12"]
+        python-version: ["3.9", "3.12"]
         install-method: ["git"]
-        csound-branch: ["csound6"]
+        csound-branch: ["csound6", "develop"]
       fail-fast: false
 
     steps:
@@ -79,7 +79,7 @@ jobs:
       - name: test
         run: |
           cd test
-          python actions-test1.py -o actions-test1-${{ runner.os }}-${{ matrix.csound-branch }}.flac
+          python actions-test1.py -o actions-test1-${{ runner.os }}-${{ matrix.install-method }}-py${{ matrix.python-version }}-${{ matrix.csound-branch }}.flac
 
       - uses: actions/upload-artifact@v3
         with:
