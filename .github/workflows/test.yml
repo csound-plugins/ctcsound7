@@ -41,7 +41,7 @@ jobs:
           echo "LD_LIBRARY_PATH: $LD_LIBRARY_PATH"
           sudo ldconfig
           csound --version
-          strace -f -t -e trace=file csound -+rtaudio=dummy --devices=out | grep "\.so"
+          strace -f -t -e trace=file csound -+rtaudio=dummy --devices=out | grep "\.so" || echo ok
 
       - name: macos - install csound 6
         if: runner.os == 'macOS' && matrix.csound-branch == 'csound6'
