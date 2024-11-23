@@ -8,7 +8,8 @@ jobs:
         os: ["windows-latest", "ubuntu-latest", "macos-latest"]
         python-version: ["3.9", "3.12"]
         install-method: ["git"]
-        csound-branch: ["csound6", "develop"]
+        # csound-branch: ["csound6", "develop"]
+        csound-branch: ["develop"]
       fail-fast: false
 
     steps:
@@ -34,7 +35,8 @@ jobs:
           mkdir build && cd build
           cmake ..
           cmake --build . --parallel
-          cmake --install .
+          sudo make install
+          # sudo cmake --install .
           csound --version
 
       - name: macos - install csound 6
