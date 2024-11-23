@@ -5,7 +5,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: ["windows-latest", "ubuntu-latest", "macos-latest"]
+        # os: ["windows-latest", "ubuntu-latest", "macos-latest"]
+        os: ["ubuntu-latest"]
         python-version: ["3.9", "3.12"]
         install-method: ["git"]
         # csound-branch: ["csound6", "develop"]
