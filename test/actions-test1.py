@@ -8,6 +8,7 @@ parser.add_argument('-d', '--dur', default=10, type=int)
 args = parser.parse_args()
 
 cs = ct.Csound()
+print(f"Csound version: {cs.version()}")
 
 cs.setOption(f"-o{args.outfile}")
 ext = os.path.splitext(args.outfile)[1]

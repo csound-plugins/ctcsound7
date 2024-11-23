@@ -126,6 +126,8 @@ MAKEGRAPHFUNC = ct.CFUNCTYPE(None, ct.c_void_p, ct.POINTER(Windat), ct.c_char_p)
 DRAWGRAPHFUNC = ct.CFUNCTYPE(None, ct.c_void_p, ct.POINTER(Windat))
 KILLGRAPHFUNC = ct.CFUNCTYPE(None, ct.c_void_p, ct.POINTER(Windat))
 EXITGRAPHFUNC = ct.CFUNCTYPE(ct.c_int32, ct.c_void_p)
+CSOUNDPERFTHREAD_p = ct.c_void_p
+PROCESSFUNC = ct.CFUNCTYPE(None, ct.c_void_p)
 
 
 def _declareAPI(libcsound, libcspt):
@@ -2197,13 +2199,6 @@ class Csound:
             (see :meth:`~Csound.setOption`)
         """
         self.setOption(f'-i "{name}"')
-
-
-
-
-CSOUNDPERFTHREAD_p = ct.c_void_p
-PROCESSFUNC = ct.CFUNCTYPE(None, ct.c_void_p)
-
 
 
 class CsoundPerformanceThread:
