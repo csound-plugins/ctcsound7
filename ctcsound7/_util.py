@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from .common import *
 import signal
 import ctypes
