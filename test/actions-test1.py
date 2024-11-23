@@ -1,5 +1,6 @@
 import ctcsound7 as ct
 import argparse
+import os
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-o', '--outfile', default='test.wav')
@@ -9,6 +10,17 @@ args = parser.parse_args()
 cs = ct.Csound()
 
 cs.setOption(f"-o{args.outfile}")
+ext = os.path.splitext(args.outfile)[1]
+if ext == '.flac':
+    cs.setOption("--format=flac")
+elif ext == '.mp3':
+    cs.setOption("--mpeg")
+elif ext == '.ogg':
+    cs.setOption("--format=ogg")
+    cs.setOption("--format=vorbis")
+else:
+    assert ext == '.wav'
+
 cs.compileOrc(r'''
 0dbfs = 1
 ksmps = 64

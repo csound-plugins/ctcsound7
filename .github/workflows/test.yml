@@ -79,8 +79,8 @@ jobs:
       - name: test
         run: |
           cd test
-          python actions-test1.py -o actions-test1-${{ runner.os }}-${{ matrix.csound-branch }}.wav
+          python actions-test1.py -o actions-test1-${{ runner.os }}-${{ matrix.csound-branch }}.flac
 
-      #- uses: actions/upload-artifact@v3
-      #  with:
-      #    path: test/*.wav
+      - uses: actions/upload-artifact@v3
+        with:
+          path: test/*.flac
