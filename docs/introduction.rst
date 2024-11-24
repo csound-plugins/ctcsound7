@@ -2,10 +2,11 @@
 Introduction
 ============
 
+
 Quick Start
 -----------
 
-.. note:: *csound* should be installed before this bindings can be.
+.. note:: *csound* should be installed before these bindings can be used
 
 
 Render in real-time
@@ -100,6 +101,26 @@ Render offline
 
 --------------------------
 
+Installation
+------------
+
+1. **Install csound** (if not installed already)
+
+For macos and windows, the recomended way to install csound is via
+the installers provided by csound itself (https://csound.com/download.html).
+In linux the recommended way is to install csound via the package manager
+(``sudo apt install csound`` for debian based distributions). In all
+these cases, at the moment, this will install csound 6. Installing csound 7
+is out of the scope of this introduction
+
+2. **Install ctcsound7**
+
+.. code-block:: shell
+
+    pip install ctcsound7
+
+
+-------------------------
 
 Compatibility
 -------------

@@ -8,14 +8,12 @@ Welcome to ctcsound7's documentation!
 
 Python bindings for Csound
 
-These bindings can be used with any version of csound >= 6.18.
-Csound 7 is explicitely supported. They are for the most part
-compatible with both version of csound. At runtime the
-correct API is imported based on the version of csound.
+This package can be used with any version of csound >= 6.18.
+Csound 7 is explicitely supported. It is for the most part
+compatible with both version of csound without modifications.
+At runtime the correct API is imported based on csound's
+version.
 
-.. note::
-
-    csound needs to be installed separately
 
 ------------
 
