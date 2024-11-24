@@ -5,7 +5,7 @@ ctcsound7
 
 Python bindings for Csound
 
-This bindings can be used with any version of csound >= 6.18. Csound 7 is explicitely supported.
+These bindings can be used with any version of csound >= 6.18. Csound 7 is explicitely supported.
 
 
 Installation

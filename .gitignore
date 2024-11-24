@@ -3,7 +3,8 @@ build
 dist
 __pycache__
 .idea
-docs/_build
+docs/_build/
+
 test/*.wav
 test/*.ogg
 test/*.flac
