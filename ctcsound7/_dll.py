@@ -2,6 +2,7 @@ from __future__ import annotations
 import ctypes as ct
 import ctypes.util
 import sys
+import os
 from functools import cache
 from .common import BUILDING_DOCS
 
@@ -44,6 +45,11 @@ def csoundDLL() -> tuple[ct.CDLL, str]:
         libname = csoundLibraryName()
     path = ctypes.util.find_library(libname)
     if path is None:
+        if sys.platform.startswith('win'):
+            PATH = os.getenv('PATH')
+            raise ImportError(f"Csound library not found (searched for '{libname}'. "
+                              f"Make sure that csound is installed and the directory containing "
+                              f"csound64.dll is in the path. PATH='{PATH}'")
         raise ImportError(f"Csound library not found (searched for '{libname}') - Make sure that csound is installed")
     _libcsound = ct.CDLL(path)
     _libcsoundpath = path
