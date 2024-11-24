@@ -83,13 +83,14 @@ jobs:
       - name: windows setup csound 7
         if: runner.os == 'windows' && matrix.csound-branch == 'develop'
         run: |
-          curl -L -o csound-binaries.zip https://github.com/csound/csound/actions/runs/11927164808/artifacts/2211330403
-          Expand-Archive csound-binaries.zip -DestinationPath "C:/Program Files/csound-binaries"
-          ls -r "C:/Program Files/csound-binaries"
-          "C:/Program Files/csound-binaries/build/Release" | Out-File -FilePath $env:GITHUB_PATH -Append
-          [Environment]::SetEnvironmentVariable("PATH", $Env:PATH + ";C:/Program Files/csound-binaries/build/Release", [EnvironmentVariableTarget]::Machine)
-          $Env:Path = $Env:Path + ";C:/Program Files/csound-binaries/build/Release"
-          echo "$PATH"
+          git clone -b develop https://github.com/csound/csound --depth 1
+          cd csound
+          choco install -y winflexbison3 innosetup
+          .\vcpkg\bootstrap-vcpkg.bat
+          cmake -B build -S . -DBUILD_TESTS=1 -DUSE_VCPKG=1 -DCUSTOM_CMAKE="./platform/windows/Custom-vs.cmake"
+          cmake --build build --config Release
+          cmake --install build
+          ls -r .
 
           # Write-Output $Env:PATH
           csound.exe --version
