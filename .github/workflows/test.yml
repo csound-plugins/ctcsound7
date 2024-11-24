@@ -80,6 +80,13 @@ jobs:
           # Write-Output $Env:PATH
           csound.exe --version
 
+      - name: Export GitHub Actions cache environment variables
+        uses: actions/github-script@v6
+        with:
+          script: |
+            core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
+            core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
+
       - name: windows setup csound 7
         if: runner.os == 'windows' && matrix.csound-branch == 'develop'
         run: |
@@ -101,7 +108,7 @@ jobs:
 
           # [System.Environment]::SetEnvironmentVariable("PATH", $Env:PATH + ";C:/Program Files/csound", [EnvironmentVariableTarget]::Machine)
           [System.Environment]::SetEnvironmentVariable("PATH", $machinePath + ";C:/Program Files/csound", [EnvironmentVariableTarget]::Machine)
-          # $Env:Path = $Env:Path + ";C:/Program Files/csound"
+          $Env:Path = $Env:Path + ";C:/Program Files/csound"
 
           # Write-Output $Env:PATH
           csound.exe --version

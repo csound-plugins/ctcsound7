@@ -1,6 +1,12 @@
+import sys
+import os
+
+if sys.platform.startswith('win'):
+    # Add the path for github actions.
+    os.environ['PATH'] = os.environ['PATH'] + ';C:/Program Files/csound'
+
 import ctcsound7 as ct
 import argparse
-import os
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-o', '--outfile', default='test.wav')
