@@ -5,12 +5,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        # os: ["windows-latest", "ubuntu-latest", "macos-latest"]
-        os: ["windows-latest"]
-        python-version: ["3.12"]
+        os: ["windows-latest", "ubuntu-latest", "macos-latest"]
+        python-version: ["3.19", "3.12"]
         install-method: ["git"]
-        # csound-branch: ["csound6", "develop"]
-        csound-branch: ["develop"]
+        csound-branch: ["csound6", "develop"]
       fail-fast: false
 
     steps:
@@ -96,7 +94,7 @@ jobs:
 
           choco install -y winflexbison3 innosetup
           .\vcpkg\bootstrap-vcpkg.bat
-          cmake -B build -S . -DBUILD_TESTS=1 -DUSE_VCPKG=1 -DCUSTOM_CMAKE="./platform/windows/Custom-vs.cmake"
+          cmake -B build -S . -DBUILD_TESTS=0 -DUSE_VCPKG=1 -DCUSTOM_CMAKE="./platform/windows/Custom-vs.cmake" -DBUILD_JAVA_INTERFACE=OFF -DBUILD_TESTS=OFF  
           cmake --build build --config Release
           # ls -r .
           New-Item -Type Directory -Force "C:/Program Files/csound"

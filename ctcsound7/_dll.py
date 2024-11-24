@@ -24,14 +24,14 @@ _libcsoundpath = ''
 
 
 def csoundDLL() -> tuple[ct.CDLL, str]:
-    if BUILDING_DOCS:
-        raise RuntimeError("Cannot access the dll while building docs")
-
     global _libcsound
     global _libcsoundpath
 
     if _libcsound is not None:
         return _libcsound, _libcsoundpath
+
+    if BUILDING_DOCS:
+        raise RuntimeError("Cannot access the dll while building docs")
 
     if sys.platform == 'linux':
         try:
@@ -46,7 +46,7 @@ def csoundDLL() -> tuple[ct.CDLL, str]:
     path = ctypes.util.find_library(libname)
     if path is None:
         if sys.platform.startswith('win'):
-            PATH = os.getenv('PATH')
+            PATH = os.environ.get('PATH')
             raise ImportError(f"Csound library not found (searched for '{libname}'. "
                               f"Make sure that csound is installed and the directory containing "
                               f"csound64.dll is in the path. PATH='{PATH}'")
