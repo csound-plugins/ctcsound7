@@ -390,6 +390,7 @@
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ctcsound7.api7.Csound.event"><code class="docutils literal notranslate"><span class="pre">Csound.event()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ctcsound7.api7.Csound.scoreEvent"><code class="docutils literal notranslate"><span class="pre">Csound.scoreEvent()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ctcsound7.api7.Csound.scoreEventAsync"><code class="docutils literal notranslate"><span class="pre">Csound.scoreEventAsync()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ctcsound7.api7.Csound.setEndMarker"><code class="docutils literal notranslate"><span class="pre">Csound.setEndMarker()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ctcsound7.api7.Csound.inputMessage"><code class="docutils literal notranslate"><span class="pre">Csound.inputMessage()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ctcsound7.api7.Csound.eventString"><code class="docutils literal notranslate"><span class="pre">Csound.eventString()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ctcsound7.api7.Csound.keyPress"><code class="docutils literal notranslate"><span class="pre">Csound.keyPress()</span></code></a></li>
@@ -441,6 +442,7 @@
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ctcsound7.api7.CsoundPerformanceThread.setScoreOffsetSeconds"><code class="docutils literal notranslate"><span class="pre">CsoundPerformanceThread.setScoreOffsetSeconds()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ctcsound7.api7.CsoundPerformanceThread.join"><code class="docutils literal notranslate"><span class="pre">CsoundPerformanceThread.join()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ctcsound7.api7.CsoundPerformanceThread.flushMessageQueue"><code class="docutils literal notranslate"><span class="pre">CsoundPerformanceThread.flushMessageQueue()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ctcsound7.api7.CsoundPerformanceThread.setEndMarker"><code class="docutils literal notranslate"><span class="pre">CsoundPerformanceThread.setEndMarker()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -811,100 +813,103 @@ if it was created by this instance itself</p>
 <tr class="row-even"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.scoreEventAsync" title="ctcsound7.api7.Csound.scoreEventAsync"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scoreEventAsync</span></code></a>(kind, pfields)</p></td>
 <td><p>Send a new event, async</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.inputMessage" title="ctcsound7.api7.Csound.inputMessage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inputMessage</span></code></a>(s)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.setEndMarker" title="ctcsound7.api7.Csound.setEndMarker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setEndMarker</span></code></a>(time)</p></td>
+<td><p>Add an end event to the score</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.inputMessage" title="ctcsound7.api7.Csound.inputMessage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inputMessage</span></code></a>(s)</p></td>
 <td><p>Similar to eventString, here for compatibility with csound6</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.eventString" title="ctcsound7.api7.Csound.eventString"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eventString</span></code></a>(message[, block])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.eventString" title="ctcsound7.api7.Csound.eventString"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eventString</span></code></a>(message[, block])</p></td>
 <td><p>Send a new event as a string.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.keyPress" title="ctcsound7.api7.Csound.keyPress"><code class="xref py py-obj docutils literal notranslate"><span class="pre">keyPress</span></code></a>(c)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.keyPress" title="ctcsound7.api7.Csound.keyPress"><code class="xref py py-obj docutils literal notranslate"><span class="pre">keyPress</span></code></a>(c)</p></td>
 <td><p>Sets the ASCII code of the most recent key pressed.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.registerKeyboardCallback" title="ctcsound7.api7.Csound.registerKeyboardCallback"><code class="xref py py-obj docutils literal notranslate"><span class="pre">registerKeyboardCallback</span></code></a>(function, userdata, ...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.registerKeyboardCallback" title="ctcsound7.api7.Csound.registerKeyboardCallback"><code class="xref py py-obj docutils literal notranslate"><span class="pre">registerKeyboardCallback</span></code></a>(function, userdata, ...)</p></td>
 <td><p>Registers general purpose callback functions for keyboard events.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.removeKeyboardCallback" title="ctcsound7.api7.Csound.removeKeyboardCallback"><code class="xref py py-obj docutils literal notranslate"><span class="pre">removeKeyboardCallback</span></code></a>(function)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.removeKeyboardCallback" title="ctcsound7.api7.Csound.removeKeyboardCallback"><code class="xref py py-obj docutils literal notranslate"><span class="pre">removeKeyboardCallback</span></code></a>(function)</p></td>
 <td><p>Removes a callback previously set with register_keyboard_callback().</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.tableLength" title="ctcsound7.api7.Csound.tableLength"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tableLength</span></code></a>(table)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.tableLength" title="ctcsound7.api7.Csound.tableLength"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tableLength</span></code></a>(table)</p></td>
 <td><p>Returns the length of a function table.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.table" title="ctcsound7.api7.Csound.table"><code class="xref py py-obj docutils literal notranslate"><span class="pre">table</span></code></a>(tableNum)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.table" title="ctcsound7.api7.Csound.table"><code class="xref py py-obj docutils literal notranslate"><span class="pre">table</span></code></a>(tableNum)</p></td>
 <td><p>Returns a pointer to function table tableNum as an ndarray.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.tableArgs" title="ctcsound7.api7.Csound.tableArgs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tableArgs</span></code></a>(tableNum)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.tableArgs" title="ctcsound7.api7.Csound.tableArgs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tableArgs</span></code></a>(tableNum)</p></td>
 <td><p>Returns a pointer to the args used to generate a function table.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.scoreTime" title="ctcsound7.api7.Csound.scoreTime"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scoreTime</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.scoreTime" title="ctcsound7.api7.Csound.scoreTime"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scoreTime</span></code></a>()</p></td>
 <td><p>Returns the current score time.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.isScorePending" title="ctcsound7.api7.Csound.isScorePending"><code class="xref py py-obj docutils literal notranslate"><span class="pre">isScorePending</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.isScorePending" title="ctcsound7.api7.Csound.isScorePending"><code class="xref py py-obj docutils literal notranslate"><span class="pre">isScorePending</span></code></a>()</p></td>
 <td><p>Tells whether Csound score events are performed or not.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.setScorePending" title="ctcsound7.api7.Csound.setScorePending"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setScorePending</span></code></a>(pending)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.setScorePending" title="ctcsound7.api7.Csound.setScorePending"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setScorePending</span></code></a>(pending)</p></td>
 <td><p>Sets whether Csound score events are performed or not.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.scoreOffsetSeconds" title="ctcsound7.api7.Csound.scoreOffsetSeconds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scoreOffsetSeconds</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.scoreOffsetSeconds" title="ctcsound7.api7.Csound.scoreOffsetSeconds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scoreOffsetSeconds</span></code></a>()</p></td>
 <td><p>Returns the score time beginning.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.setScoreOffsetSeconds" title="ctcsound7.api7.Csound.setScoreOffsetSeconds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setScoreOffsetSeconds</span></code></a>(time)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.setScoreOffsetSeconds" title="ctcsound7.api7.Csound.setScoreOffsetSeconds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setScoreOffsetSeconds</span></code></a>(time)</p></td>
 <td><p>Csound score events prior to the specified time are not performed.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.rewindScore" title="ctcsound7.api7.Csound.rewindScore"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rewindScore</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.rewindScore" title="ctcsound7.api7.Csound.rewindScore"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rewindScore</span></code></a>()</p></td>
 <td><p>Rewinds a compiled Csound score.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.sleep" title="ctcsound7.api7.Csound.sleep"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sleep</span></code></a>(milliseconds)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.sleep" title="ctcsound7.api7.Csound.sleep"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sleep</span></code></a>(milliseconds)</p></td>
 <td><p>Waits for at least the specified number of milliseconds.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.loadPlugins" title="ctcsound7.api7.Csound.loadPlugins"><code class="xref py py-obj docutils literal notranslate"><span class="pre">loadPlugins</span></code></a>(directory)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.loadPlugins" title="ctcsound7.api7.Csound.loadPlugins"><code class="xref py py-obj docutils literal notranslate"><span class="pre">loadPlugins</span></code></a>(directory)</p></td>
 <td><p>Loads all plugins from a given directory.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.appendOpcode" title="ctcsound7.api7.Csound.appendOpcode"><code class="xref py py-obj docutils literal notranslate"><span class="pre">appendOpcode</span></code></a>(opname, dsblksiz, flags, ...[, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.appendOpcode" title="ctcsound7.api7.Csound.appendOpcode"><code class="xref py py-obj docutils literal notranslate"><span class="pre">appendOpcode</span></code></a>(opname, dsblksiz, flags, ...[, ...])</p></td>
 <td><p>Appends an opcode implemented by external software.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.setIsGraphable" title="ctcsound7.api7.Csound.setIsGraphable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setIsGraphable</span></code></a>(isGraphable)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.setIsGraphable" title="ctcsound7.api7.Csound.setIsGraphable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setIsGraphable</span></code></a>(isGraphable)</p></td>
 <td><p>Tells Csound whether external graphic table display is supported.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.setMakeGraphCallback" title="ctcsound7.api7.Csound.setMakeGraphCallback"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setMakeGraphCallback</span></code></a>(function)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.setMakeGraphCallback" title="ctcsound7.api7.Csound.setMakeGraphCallback"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setMakeGraphCallback</span></code></a>(function)</p></td>
 <td><p>Called by external software to set Csound's MakeGraph function.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.setDrawGraphCallback" title="ctcsound7.api7.Csound.setDrawGraphCallback"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setDrawGraphCallback</span></code></a>(function)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.setDrawGraphCallback" title="ctcsound7.api7.Csound.setDrawGraphCallback"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setDrawGraphCallback</span></code></a>(function)</p></td>
 <td><p>Called by external software to set Csound's DrawGraph function.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.setKillGraphCallback" title="ctcsound7.api7.Csound.setKillGraphCallback"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setKillGraphCallback</span></code></a>(function)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.setKillGraphCallback" title="ctcsound7.api7.Csound.setKillGraphCallback"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setKillGraphCallback</span></code></a>(function)</p></td>
 <td><p>Called by external software to set Csound's KillGraph function.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.setExitGraphCallback" title="ctcsound7.api7.Csound.setExitGraphCallback"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setExitGraphCallback</span></code></a>(function)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.setExitGraphCallback" title="ctcsound7.api7.Csound.setExitGraphCallback"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setExitGraphCallback</span></code></a>(function)</p></td>
 <td><p>Called by external software to set Csound's ExitGraph function.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.createCircularBuffer" title="ctcsound7.api7.Csound.createCircularBuffer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">createCircularBuffer</span></code></a>(numelem[, elemsize])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.createCircularBuffer" title="ctcsound7.api7.Csound.createCircularBuffer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">createCircularBuffer</span></code></a>(numelem[, elemsize])</p></td>
 <td><p>Creates a circular buffer with <em>numelem</em> number of elements.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.readCircularBuffer" title="ctcsound7.api7.Csound.readCircularBuffer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">readCircularBuffer</span></code></a>(buffer, out, numitems)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.readCircularBuffer" title="ctcsound7.api7.Csound.readCircularBuffer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">readCircularBuffer</span></code></a>(buffer, out, numitems)</p></td>
 <td><p>Reads from circular buffer.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.peekCircularBuffer" title="ctcsound7.api7.Csound.peekCircularBuffer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">peekCircularBuffer</span></code></a>(buffer, out, numitems)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.peekCircularBuffer" title="ctcsound7.api7.Csound.peekCircularBuffer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">peekCircularBuffer</span></code></a>(buffer, out, numitems)</p></td>
 <td><p>Reads from circular buffer without removing them from the buffer.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.writeCircularBuffer" title="ctcsound7.api7.Csound.writeCircularBuffer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">writeCircularBuffer</span></code></a>(buffer, data, numitems)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.writeCircularBuffer" title="ctcsound7.api7.Csound.writeCircularBuffer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">writeCircularBuffer</span></code></a>(buffer, data, numitems)</p></td>
 <td><p>Writes to circular buffer.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.flushCircularBuffer" title="ctcsound7.api7.Csound.flushCircularBuffer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flushCircularBuffer</span></code></a>(buffer)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.flushCircularBuffer" title="ctcsound7.api7.Csound.flushCircularBuffer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flushCircularBuffer</span></code></a>(buffer)</p></td>
 <td><p>Empties circular buffer of any remaining data.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.destroyCircularBuffer" title="ctcsound7.api7.Csound.destroyCircularBuffer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">destroyCircularBuffer</span></code></a>(buffer)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.destroyCircularBuffer" title="ctcsound7.api7.Csound.destroyCircularBuffer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">destroyCircularBuffer</span></code></a>(buffer)</p></td>
 <td><p>Frees circular buffer.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.setOpenSoundFileCallback" title="ctcsound7.api7.Csound.setOpenSoundFileCallback"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setOpenSoundFileCallback</span></code></a>(function)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.setOpenSoundFileCallback" title="ctcsound7.api7.Csound.setOpenSoundFileCallback"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setOpenSoundFileCallback</span></code></a>(function)</p></td>
 <td><p>Sets a callback for opening a sound file.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.setOpenFileCallback" title="ctcsound7.api7.Csound.setOpenFileCallback"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setOpenFileCallback</span></code></a>(function)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.setOpenFileCallback" title="ctcsound7.api7.Csound.setOpenFileCallback"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setOpenFileCallback</span></code></a>(function)</p></td>
 <td><p>Sets a callback for opening a file.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.setOutput" title="ctcsound7.api7.Csound.setOutput"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setOutput</span></code></a>(name[, filetype, format])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.setOutput" title="ctcsound7.api7.Csound.setOutput"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setOutput</span></code></a>(name[, filetype, format])</p></td>
 <td><p>Sets output destination, filetype and format.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.setInput" title="ctcsound7.api7.Csound.setInput"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setInput</span></code></a>(name)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ctcsound7.api7.Csound.setInput" title="ctcsound7.api7.Csound.setInput"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setInput</span></code></a>(name)</p></td>
 <td><p>Sets input source.</p></td>
 </tr>
 </tbody>
@@ -2458,6 +2463,21 @@ with csound 6</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="ctcsound7.api7.Csound.setEndMarker">
+<span class="sig-name descname"><span class="pre">setEndMarker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctcsound7/api7.html#Csound.setEndMarker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ctcsound7.api7.Csound.setEndMarker" title="Link to this definition">#</a></dt>
+<dd><p>Add an end event to the score</p>
+<p>This stops the performance at the given time</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>time</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – time to add the end event</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="ctcsound7.api7.Csound.inputMessage">
 <span class="sig-name descname"><span class="pre">inputMessage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctcsound7/api7.html#Csound.inputMessage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ctcsound7.api7.Csound.inputMessage" title="Link to this definition">#</a></dt>
 <dd><p>Similar to eventString, here for compatibility with csound6</p>
@@ -3185,6 +3205,21 @@ object.</p>
 <p>(pause, send score event, etc.)</p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="ctcsound7.api7.CsoundPerformanceThread.setEndMarker">
+<span class="sig-name descname"><span class="pre">setEndMarker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">absolute</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctcsound7/api7.html#CsoundPerformanceThread.setEndMarker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ctcsound7.api7.CsoundPerformanceThread.setEndMarker" title="Link to this definition">#</a></dt>
+<dd><p>Add an end event to the score</p>
+<p>This stops the performance at the given time</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>time</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – time to add the end event</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 </section>
@@ -3342,6 +3377,7 @@ object.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ctcsound7.api7.Csound.event"><code class="docutils literal notranslate"><span class="pre">Csound.event()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ctcsound7.api7.Csound.scoreEvent"><code class="docutils literal notranslate"><span class="pre">Csound.scoreEvent()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ctcsound7.api7.Csound.scoreEventAsync"><code class="docutils literal notranslate"><span class="pre">Csound.scoreEventAsync()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ctcsound7.api7.Csound.setEndMarker"><code class="docutils literal notranslate"><span class="pre">Csound.setEndMarker()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ctcsound7.api7.Csound.inputMessage"><code class="docutils literal notranslate"><span class="pre">Csound.inputMessage()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ctcsound7.api7.Csound.eventString"><code class="docutils literal notranslate"><span class="pre">Csound.eventString()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ctcsound7.api7.Csound.keyPress"><code class="docutils literal notranslate"><span class="pre">Csound.keyPress()</span></code></a></li>
@@ -3393,6 +3429,7 @@ object.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ctcsound7.api7.CsoundPerformanceThread.setScoreOffsetSeconds"><code class="docutils literal notranslate"><span class="pre">CsoundPerformanceThread.setScoreOffsetSeconds()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ctcsound7.api7.CsoundPerformanceThread.join"><code class="docutils literal notranslate"><span class="pre">CsoundPerformanceThread.join()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ctcsound7.api7.CsoundPerformanceThread.flushMessageQueue"><code class="docutils literal notranslate"><span class="pre">CsoundPerformanceThread.flushMessageQueue()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ctcsound7.api7.CsoundPerformanceThread.setEndMarker"><code class="docutils literal notranslate"><span class="pre">CsoundPerformanceThread.setEndMarker()</span></code></a></li>
 </ul>
 </li>
 </ul>

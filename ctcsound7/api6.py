@@ -1441,8 +1441,8 @@ class Csound:
         .. note:: not implemented in csound 7
         """
         _notPresentInCsound7()
-        self.recordOpenCbRef = RECORDOPENFUNC(function)
-        libcsound.csoundSetRecopenCallback(self.cs, self.recordOpenCbRef)
+        self._callbacks['recordOpen'] = f = RECORDOPENFUNC(function)
+        libcsound.csoundSetRecopenCallback(self.cs, f)
 
     def setRtRecordCallback(self, function: Callable) -> None:
         """Sets a callback for performing real-time audio recording.
@@ -1450,8 +1450,8 @@ class Csound:
         .. note:: not implemented in csound 7
         """
         _notPresentInCsound7()
-        self.rtRecordCbRef = RTRECORDFUNC(function)
-        libcsound.csoundSetRtrecordCallback(self.cs, self.rtRecordCbRef)
+        self._callbacks['rtRecord'] = f = RTRECORDFUNC(function)
+        libcsound.csoundSetRtrecordCallback(self.cs, f)
 
     def setRtCloseCallback(self, function):
         """Sets a callback for closing real-time audio playback and recording.
@@ -1459,8 +1459,8 @@ class Csound:
         .. note:: not implemented in csound 7
         """
         _notPresentInCsound7()
-        self.rtCloseCbRef = RTCLOSEFUNC(function)
-        libcsound.csoundSetRtcloseCallback(self.cs, self.rtCloseCbRef)
+        self._callbacks['rtClose'] = f = RTCLOSEFUNC(function)
+        libcsound.csoundSetRtcloseCallback(self.cs, f)
 
     def setAudioDevListCallback(self, function):
         """Sets a callback for obtaining a list of audio devices.
@@ -1502,33 +1502,33 @@ class Csound:
 
     def setExternalMidiInOpenCallback(self, function) -> None:
         """Sets a callback for opening real-time MIDI input."""
-        self.extMidiInOpenCbRef = MIDIINOPENFUNC(function)
-        libcsound.csoundSetExternalMidiInOpenCallback(self.cs, self.extMidiInOpenCbRef)
+        self._callbacks['extMidiInOpen'] = f = MIDIINOPENFUNC(function)
+        libcsound.csoundSetExternalMidiInOpenCallback(self.cs, f)
 
     def setExternalMidiReadCallback(self, function) -> None:
         """Sets a callback for reading from real time MIDI input."""
-        self.extMidiReadCbRef = MIDIREADFUNC(function)
-        libcsound.csoundSetExternalMidiReadCallback(self.cs, self.extMidiReadCbRef)
+        self._callbacks['extMidiRead'] = f = MIDIREADFUNC(function)
+        libcsound.csoundSetExternalMidiReadCallback(self.cs, f)
 
     def setExternalMidiInCloseCallback(self, function) -> None:
         """Sets a callback for closing real time MIDI input."""
-        self.extMidiInCloseCbRef = MIDIINCLOSEFUNC(function)
-        libcsound.csoundSetExternalMidiInCloseCallback(self.cs, self.extMidiInCloseCbRef)
+        self._callbacks['extMidiInClose'] = f = MIDIINCLOSEFUNC(function)
+        libcsound.csoundSetExternalMidiInCloseCallback(self.cs, f)
 
     def setExternalMidiOutOpenCallback(self, function) -> None:
         """Sets a callback for opening real-time MIDI input."""
-        self.extMidiOutOpenCbRef = MIDIOUTOPENFUNC(function)
-        libcsound.csoundSetExternalMidiOutOpenCallback(self.cs, self.extMidiOutOpenCbRef)
+        self._callbacks['extMidiOutOpen'] = f = MIDIOUTOPENFUNC(function)
+        libcsound.csoundSetExternalMidiOutOpenCallback(self.cs, f)
 
     def setExternalMidiWriteCallback(self, function) -> None:
         """Sets a callback for reading from real time MIDI input."""
-        self.extMidiWriteCbRef = MIDIWRITEFUNC(function)
-        libcsound.csoundSetExternalMidiWriteCallback(self.cs, self.extMidiWriteCbRef)
+        self._callbacks['extMidiWrite'] = f = MIDIWRITEFUNC(function)
+        libcsound.csoundSetExternalMidiWriteCallback(self.cs, f)
 
     def setExternalMidiOutCloseCallback(self, function) -> None:
         """Sets a callback for closing real time MIDI input."""
-        self.extMidiOutCloseCbRef = MIDIOUTCLOSEFUNC(function)
-        libcsound.csoundSetExternalMidiOutCloseCallback(self.cs, self.extMidiOutCloseCbRef)
+        self._callbacks['extMidiOutClose'] = f = MIDIOUTCLOSEFUNC(function)
+        libcsound.csoundSetExternalMidiOutCloseCallback(self.cs, f)
 
     def setExternalMidiErrorStringCallback(self, function):
         """ Sets a callback for converting MIDI error codes to strings."""
@@ -2189,6 +2189,14 @@ class Csound:
         libcsound.csoundScoreEventAbsoluteAsync(self.cs, cchar(type_), ptr, numFields, ct.c_double(timeOffset))
 
     def setEndMarker(self, time: float) -> None:
+        """
+        Add an end event to the score
+
+        This stops the performance at the given time
+
+        Args:
+            time: time to add the end event
+        """
         self.scoreEvent("e", [0, time])
 
     def inputMessage(self, message: str) -> None:
@@ -3296,6 +3304,17 @@ class CsoundPerformanceThread:
         (pause, send score event, etc.)
         """
         libcspt.CsoundPTflushMessageQueue(self.cpt)
+
+    def setEndMarker(self, time: float, absolute=False) -> None:
+        """
+        Add an end event to the score
+
+        This stops the performance at the given time
+
+        Args:
+            time: time to add the end event
+        """
+        self.scoreEvent(int(absolute), "e", [0, time])
 
 
 def getSystemSr(module: str = '') -> tuple[float, str]:

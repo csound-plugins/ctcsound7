@@ -9,7 +9,7 @@ Welcome to ctcsound7's documentation!
 loris ipsum
 
 .. toctree:: ctcsound7
-	:maxdepth: 2
+	:maxdepth: 1
 
 	introduction
 	csound7

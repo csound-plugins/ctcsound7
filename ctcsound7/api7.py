@@ -1772,6 +1772,14 @@ class Csound:
         return self.event(kind=kind, pfields=pfields, block=False)
 
     def setEndMarker(self, time: float) -> None:
+        """
+        Add an end event to the score
+
+        This stops the performance at the given time
+
+        Args:
+            time: time to add the end event
+        """
         self.scoreEvent("e", [0, time])
 
     def inputMessage(self, s: str):
@@ -2349,6 +2357,14 @@ class CsoundPerformanceThread:
         libcspt.csoundPerformanceThreadFlushMessageQueue(self.cpt)
 
     def setEndMarker(self, time: float, absolute=False) -> None:
+        """
+        Add an end event to the score
+
+        This stops the performance at the given time
+
+        Args:
+            time: time to add the end event
+        """
         self.scoreEvent(int(absolute), "e", [0, time])
 
 

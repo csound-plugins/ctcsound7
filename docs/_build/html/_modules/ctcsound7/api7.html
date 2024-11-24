@@ -2324,8 +2324,19 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">event</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="n">kind</span><span class="p">,</span> <span class="n">pfields</span><span class="o">=</span><span class="n">pfields</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="Csound.setEndMarker">
+<a class="viewcode-back" href="../../csound7.html#ctcsound7.api7.Csound.setEndMarker">[docs]</a>
     <span class="k">def</span> <span class="nf">setEndMarker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">scoreEvent</span><span class="p">(</span><span class="s2">&quot;e&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">time</span><span class="p">])</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add an end event to the score</span>
+
+<span class="sd">        This stops the performance at the given time</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            time: time to add the end event</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scoreEvent</span><span class="p">(</span><span class="s2">&quot;e&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">time</span><span class="p">])</span></div>
+
 
 <div class="viewcode-block" id="Csound.inputMessage">
 <a class="viewcode-back" href="../../csound7.html#ctcsound7.api7.Csound.inputMessage">[docs]</a>
@@ -3048,8 +3059,19 @@
         <span class="n">libcspt</span><span class="o">.</span><span class="n">csoundPerformanceThreadFlushMessageQueue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cpt</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="CsoundPerformanceThread.setEndMarker">
+<a class="viewcode-back" href="../../csound7.html#ctcsound7.api7.CsoundPerformanceThread.setEndMarker">[docs]</a>
     <span class="k">def</span> <span class="nf">setEndMarker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">absolute</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add an end event to the score</span>
+
+<span class="sd">        This stops the performance at the given time</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            time: time to add the end event</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">scoreEvent</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">absolute</span><span class="p">),</span> <span class="s2">&quot;e&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">time</span><span class="p">])</span></div>
+</div>
 
 
 
