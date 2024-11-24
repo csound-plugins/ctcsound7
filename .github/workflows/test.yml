@@ -78,8 +78,9 @@ jobs:
           # Write-Output $Env:PATH
           csound.exe --version
 
+      # via https://learn.microsoft.com/en-us/vcpkg/consume/binary-caching-github-actions-cache
       - name: Export GitHub Actions cache environment variables
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           script: |
             core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
@@ -87,6 +88,8 @@ jobs:
 
       - name: windows setup csound 7
         if: runner.os == 'windows' && matrix.csound-branch == 'develop'
+        env:
+          VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
         run: |
           git clone -b develop https://github.com/csound/csound --depth 1
           cd csound
@@ -94,7 +97,7 @@ jobs:
 
           choco install -y winflexbison3 innosetup
           .\vcpkg\bootstrap-vcpkg.bat
-          cmake -B build -S . -DBUILD_TESTS=0 -DUSE_VCPKG=1 -DCUSTOM_CMAKE="./platform/windows/Custom-vs.cmake" -DBUILD_JAVA_INTERFACE=OFF -DBUILD_TESTS=OFF  
+          cmake -B build -S . -DBUILD_TESTS=0 -DUSE_VCPKG=1 -DCUSTOM_CMAKE="./platform/windows/Custom-vs.cmake" -DBUILD_JAVA_INTERFACE=OFF -DBUILD_TESTS=OFF
           cmake --build build --config Release
           # ls -r .
           New-Item -Type Directory -Force "C:/Program Files/csound"

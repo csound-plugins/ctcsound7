@@ -3,7 +3,8 @@ import os
 
 if sys.platform.startswith('win'):
     # Add the path for github actions.
-    os.environ['PATH'] = os.environ['PATH'] + ';C:/Program Files/csound'
+    if os.path.exists('C:/Program Files/csound'):
+        os.environ['PATH'] = os.environ['PATH'] + ';C:/Program Files/csound'
 
 import ctcsound7 as ct
 import argparse
