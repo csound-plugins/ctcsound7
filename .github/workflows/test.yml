@@ -112,7 +112,6 @@ jobs:
 
           # Write-Output $Env:PATH
           csound.exe --version
-          csound.exe --devices=out
 
       - name: install from repo
         if: ${{ matrix.install-method == 'git' }}
