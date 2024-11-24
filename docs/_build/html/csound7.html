@@ -2411,7 +2411,15 @@ this function is a non-op.</p>
 performed asynchronously</p></li>
 </ul>
 </dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
 </dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>this method does not exist in csound 6. For backwards compatibility
+use <a class="reference internal" href="#ctcsound7.api7.Csound.scoreEvent" title="ctcsound7.api7.Csound.scoreEvent"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Csound.scoreEvent()</span></code></a> or <a class="reference internal" href="#ctcsound7.api7.Csound.scoreEventAsync" title="ctcsound7.api7.Csound.scoreEventAsync"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Csound.scoreEventAsync()</span></code></a></p>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -2579,20 +2587,27 @@ its parameters. eg. f 1 0 1024 10 1 0.5  yields the list
 <dt class="sig sig-object py" id="ctcsound7.api7.Csound.scoreTime">
 <span class="sig-name descname"><span class="pre">scoreTime</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctcsound7/api7.html#Csound.scoreTime"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ctcsound7.api7.Csound.scoreTime" title="Link to this definition">#</a></dt>
 <dd><p>Returns the current score time.</p>
-<p>The return value is the time in seconds since the beginning of
-performance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span></p>
 </dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>current time, in seconds</p>
+</dd>
 </dl>
+<p>The return value is the time in seconds since the beginning of
+performance. This can be used to schedule events at absolute times</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#ctcsound7.api7.Csound.currentTimeSamples" title="ctcsound7.api7.Csound.currentTimeSamples"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Csound.currentTimeSamples()</span></code></a></p>
+</div>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ctcsound7.api7.Csound.isScorePending">
 <span class="sig-name descname"><span class="pre">isScorePending</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctcsound7/api7.html#Csound.isScorePending"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ctcsound7.api7.Csound.isScorePending" title="Link to this definition">#</a></dt>
 <dd><p>Tells whether Csound score events are performed or not.</p>
-<p>Independently of real-time MIDI events (see set_score_pending()).</p>
+<p>Independently of real-time MIDI events (see <a class="reference internal" href="#ctcsound7.api7.Csound.setScorePending" title="ctcsound7.api7.Csound.setScorePending"><code class="xref py py-meth docutils literal notranslate"><span class="pre">setScorePending()</span></code></a>).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></p>
@@ -2652,7 +2667,7 @@ sequencer, or to synchronize other events with the Csound score.</p>
 <dt class="sig sig-object py" id="ctcsound7.api7.Csound.rewindScore">
 <span class="sig-name descname"><span class="pre">rewindScore</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ctcsound7/api7.html#Csound.rewindScore"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ctcsound7.api7.Csound.rewindScore" title="Link to this definition">#</a></dt>
 <dd><p>Rewinds a compiled Csound score.</p>
-<p>It is rewinded to the time specified with set_score_offset_seconds().</p>
+<p>It is rewinded to the time specified with <a class="reference internal" href="#ctcsound7.api7.Csound.setScoreOffsetSeconds" title="ctcsound7.api7.Csound.setScoreOffsetSeconds"><code class="xref py py-meth docutils literal notranslate"><span class="pre">setScoreOffsetSeconds()</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>

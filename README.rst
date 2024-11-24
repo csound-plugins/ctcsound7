@@ -43,7 +43,7 @@ Rendering in real-time using a render thread
       if changed:k(kchan) == 1 then
         println "Channel: %d", kchan + 1
       endif
-      asig = {signal}
+      asig = pinker() * 0.2
       outch kchan + 1, asig
     endin
 
@@ -80,7 +80,7 @@ Render offline
       if changed:k(kchan) == 1 then
         println "Channel: %d", kchan + 1
       endif
-      asig = {signal}
+      asig = pinker() * 0.2
       outch kchan + 1, asig
     endin
 

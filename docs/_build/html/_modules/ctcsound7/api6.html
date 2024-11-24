@@ -2825,6 +2825,9 @@
         <span class="n">libcsound</span><span class="o">.</span><span class="n">csoundScoreEventAbsoluteAsync</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cs</span><span class="p">,</span> <span class="n">cchar</span><span class="p">(</span><span class="n">type_</span><span class="p">),</span> <span class="n">ptr</span><span class="p">,</span> <span class="n">numFields</span><span class="p">,</span> <span class="n">ct</span><span class="o">.</span><span class="n">c_double</span><span class="p">(</span><span class="n">timeOffset</span><span class="p">))</span></div>
 
 
+    <span class="k">def</span> <span class="nf">setEndMarker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scoreEvent</span><span class="p">(</span><span class="s2">&quot;e&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">time</span><span class="p">])</span>
+
 <div class="viewcode-block" id="Csound.inputMessage">
 <a class="viewcode-back" href="../../csound6.html#ctcsound7.api6.Csound.inputMessage">[docs]</a>
     <span class="k">def</span> <span class="nf">inputMessage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>

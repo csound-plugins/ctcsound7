@@ -365,6 +365,8 @@
 <span class="n">DRAWGRAPHFUNC</span> <span class="o">=</span> <span class="n">ct</span><span class="o">.</span><span class="n">CFUNCTYPE</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">ct</span><span class="o">.</span><span class="n">c_void_p</span><span class="p">,</span> <span class="n">ct</span><span class="o">.</span><span class="n">POINTER</span><span class="p">(</span><span class="n">Windat</span><span class="p">))</span>
 <span class="n">KILLGRAPHFUNC</span> <span class="o">=</span> <span class="n">ct</span><span class="o">.</span><span class="n">CFUNCTYPE</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">ct</span><span class="o">.</span><span class="n">c_void_p</span><span class="p">,</span> <span class="n">ct</span><span class="o">.</span><span class="n">POINTER</span><span class="p">(</span><span class="n">Windat</span><span class="p">))</span>
 <span class="n">EXITGRAPHFUNC</span> <span class="o">=</span> <span class="n">ct</span><span class="o">.</span><span class="n">CFUNCTYPE</span><span class="p">(</span><span class="n">ct</span><span class="o">.</span><span class="n">c_int32</span><span class="p">,</span> <span class="n">ct</span><span class="o">.</span><span class="n">c_void_p</span><span class="p">)</span>
+<span class="n">CSOUNDPERFTHREAD_p</span> <span class="o">=</span> <span class="n">ct</span><span class="o">.</span><span class="n">c_void_p</span>
+<span class="n">PROCESSFUNC</span> <span class="o">=</span> <span class="n">ct</span><span class="o">.</span><span class="n">CFUNCTYPE</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">ct</span><span class="o">.</span><span class="n">c_void_p</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_declareAPI</span><span class="p">(</span><span class="n">libcsound</span><span class="p">,</span> <span class="n">libcspt</span><span class="p">):</span>
@@ -2267,7 +2269,7 @@
 
 <div class="viewcode-block" id="Csound.event">
 <a class="viewcode-back" href="../../csound7.html#ctcsound7.api7.Csound.event">[docs]</a>
-    <span class="k">def</span> <span class="nf">event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kind</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">pfields</span><span class="p">:</span> <span class="n">_t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kind</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">pfields</span><span class="p">:</span> <span class="n">_t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Send a new event.</span>
 
@@ -2277,7 +2279,8 @@
 <span class="sd">            block: if True, the operation is blocking. Otherwise it is</span>
 <span class="sd">                performed asynchronously</span>
 
-
+<span class="sd">        .. note:: this method does not exist in csound 6. For backwards compatibility</span>
+<span class="sd">            use :meth:`Csound.scoreEvent` or :meth:`Csound.scoreEventAsync`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">eventtype</span> <span class="o">=</span> <span class="n">_scoreEventToTypenum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">kind</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">eventtype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -2285,8 +2288,7 @@
         <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">pfields</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">MYFLT</span><span class="p">)</span>
         <span class="n">ptr</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">ct</span><span class="o">.</span><span class="n">POINTER</span><span class="p">(</span><span class="n">MYFLT</span><span class="p">))</span>
         <span class="n">n_fields</span> <span class="o">=</span> <span class="n">ct</span><span class="o">.</span><span class="n">c_int32</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
-        <span class="n">libcsound</span><span class="o">.</span><span class="n">csoundEvent</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cs</span><span class="p">,</span> <span class="n">ct</span><span class="o">.</span><span class="n">c_int32</span><span class="p">(</span><span class="n">eventtype</span><span class="p">),</span> <span class="n">ptr</span><span class="p">,</span> <span class="n">n_fields</span><span class="p">,</span>
-            <span class="n">ct</span><span class="o">.</span><span class="n">c_int32</span><span class="p">(</span><span class="ow">not</span> <span class="n">block</span><span class="p">))</span></div>
+        <span class="n">libcsound</span><span class="o">.</span><span class="n">csoundEvent</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cs</span><span class="p">,</span> <span class="n">ct</span><span class="o">.</span><span class="n">c_int32</span><span class="p">(</span><span class="n">eventtype</span><span class="p">),</span> <span class="n">ptr</span><span class="p">,</span> <span class="n">n_fields</span><span class="p">,</span> <span class="n">ct</span><span class="o">.</span><span class="n">c_int32</span><span class="p">(</span><span class="ow">not</span> <span class="n">block</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="Csound.scoreEvent">
@@ -2321,6 +2323,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">event</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="n">kind</span><span class="p">,</span> <span class="n">pfields</span><span class="o">=</span><span class="n">pfields</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
+
+    <span class="k">def</span> <span class="nf">setEndMarker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scoreEvent</span><span class="p">(</span><span class="s2">&quot;e&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">time</span><span class="p">])</span>
 
 <div class="viewcode-block" id="Csound.inputMessage">
 <a class="viewcode-back" href="../../csound7.html#ctcsound7.api7.Csound.inputMessage">[docs]</a>
@@ -2476,8 +2481,13 @@
     <span class="k">def</span> <span class="nf">scoreTime</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the current score time.</span>
 
+<span class="sd">        Returns:</span>
+<span class="sd">            current time, in seconds</span>
+
 <span class="sd">        The return value is the time in seconds since the beginning of</span>
-<span class="sd">        performance.</span>
+<span class="sd">        performance. This can be used to schedule events at absolute times</span>
+
+<span class="sd">        .. seealso:: :meth:`Csound.currentTimeSamples`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">libcsound</span><span class="o">.</span><span class="n">csoundGetScoreTime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cs</span><span class="p">)</span></div>
 
@@ -2487,9 +2497,9 @@
     <span class="k">def</span> <span class="nf">isScorePending</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Tells whether Csound score events are performed or not.</span>
 
-<span class="sd">        Independently of real-time MIDI events (see set_score_pending()).</span>
+<span class="sd">        Independently of real-time MIDI events (see :py:meth:`setScorePending`).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">libcsound</span><span class="o">.</span><span class="n">csoundIsScorePending</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cs</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span></div>
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">libcsound</span><span class="o">.</span><span class="n">csoundIsScorePending</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cs</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="Csound.setScorePending">
@@ -2540,7 +2550,7 @@
     <span class="k">def</span> <span class="nf">rewindScore</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Rewinds a compiled Csound score.</span>
 
-<span class="sd">        It is rewinded to the time specified with set_score_offset_seconds().</span>
+<span class="sd">        It is rewinded to the time specified with :py:meth:`setScoreOffsetSeconds()`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">libcsound</span><span class="o">.</span><span class="n">csoundRewindScore</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cs</span><span class="p">)</span></div>
 
@@ -2844,13 +2854,6 @@
 
 
 
-
-
-<span class="n">CSOUNDPERFTHREAD_p</span> <span class="o">=</span> <span class="n">ct</span><span class="o">.</span><span class="n">c_void_p</span>
-<span class="n">PROCESSFUNC</span> <span class="o">=</span> <span class="n">ct</span><span class="o">.</span><span class="n">CFUNCTYPE</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">ct</span><span class="o">.</span><span class="n">c_void_p</span><span class="p">)</span>
-
-
-
 <div class="viewcode-block" id="CsoundPerformanceThread">
 <a class="viewcode-back" href="../../csound7.html#ctcsound7.api7.CsoundPerformanceThread">[docs]</a>
 <span class="k">class</span> <span class="nc">CsoundPerformanceThread</span><span class="p">:</span>
@@ -3043,7 +3046,10 @@
 <span class="sd">        (pause, send score event, etc.)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">libcspt</span><span class="o">.</span><span class="n">csoundPerformanceThreadFlushMessageQueue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cpt</span><span class="p">)</span></div>
-</div>
+
+
+    <span class="k">def</span> <span class="nf">setEndMarker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">absolute</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scoreEvent</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">absolute</span><span class="p">),</span> <span class="s2">&quot;e&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">time</span><span class="p">])</span></div>
 
 
 
