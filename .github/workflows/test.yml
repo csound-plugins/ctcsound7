@@ -97,11 +97,15 @@ jobs:
           cp build/Release/*.dll "C:/Program Files/csound"
           cp build/Release/*.lib "C:/Program Files/csound"
 
-          [Environment]::SetEnvironmentVariable("PATH", $Env:PATH + ";C:/Program Files/csound", [EnvironmentVariableTarget]::Machine)
-          $Env:Path = $Env:Path + ";C:/Program Files/csound"
+          $machinePath = [System.Environment]::GetEnvironmentVariable('PATH', 'Machine')
+
+          # [System.Environment]::SetEnvironmentVariable("PATH", $Env:PATH + ";C:/Program Files/csound", [EnvironmentVariableTarget]::Machine)
+          [System.Environment]::SetEnvironmentVariable("PATH", $machinePath + ";C:/Program Files/csound", [EnvironmentVariableTarget]::Machine)
+          # $Env:Path = $Env:Path + ";C:/Program Files/csound"
 
           # Write-Output $Env:PATH
           csound.exe --version
+          csound.exe --devices=out
 
       - name: install from repo
         if: ${{ matrix.install-method == 'git' }}
