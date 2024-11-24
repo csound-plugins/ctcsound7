@@ -85,6 +85,8 @@ jobs:
         run: |
           git clone -b develop https://github.com/csound/csound --depth 1
           cd csound
+          git submodule update --init --recursive
+
           choco install -y winflexbison3 innosetup
           .\vcpkg\bootstrap-vcpkg.bat
           cmake -B build -S . -DBUILD_TESTS=1 -DUSE_VCPKG=1 -DCUSTOM_CMAKE="./platform/windows/Custom-vs.cmake"
