@@ -1771,6 +1771,9 @@ class Csound:
         """
         return self.event(kind=kind, pfields=pfields, block=False)
 
+    def setEndMarker(self, time: float) -> None:
+        self.scoreEvent("e", [0, time])
+
     def inputMessage(self, s: str):
         """
         Similar to eventString, here for compatibility with csound6
@@ -2344,6 +2347,9 @@ class CsoundPerformanceThread:
         (pause, send score event, etc.)
         """
         libcspt.csoundPerformanceThreadFlushMessageQueue(self.cpt)
+
+    def setEndMarker(self, time: float, absolute=False) -> None:
+        self.scoreEvent(int(absolute), "e", [0, time])
 
 
 def getSystemSr(module: str = '') -> tuple[float, str]:

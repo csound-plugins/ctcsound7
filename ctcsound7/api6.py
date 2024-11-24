@@ -2188,6 +2188,9 @@ class Csound:
         numFields = ct.c_long(p.size)
         libcsound.csoundScoreEventAbsoluteAsync(self.cs, cchar(type_), ptr, numFields, ct.c_double(timeOffset))
 
+    def setEndMarker(self, time: float) -> None:
+        self.scoreEvent("e", [0, time])
+
     def inputMessage(self, message: str) -> None:
         """Inputs a NULL-terminated string (as if from a console).
 
