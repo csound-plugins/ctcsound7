@@ -91,8 +91,14 @@ jobs:
           .\vcpkg\bootstrap-vcpkg.bat
           cmake -B build -S . -DBUILD_TESTS=1 -DUSE_VCPKG=1 -DCUSTOM_CMAKE="./platform/windows/Custom-vs.cmake"
           cmake --build build --config Release
-          cmake --install build
-          ls -r .
+          # ls -r .
+          New-Item -Type Directory -Force "C:/Program Files/csound"
+          cp build/Release/*.exe "C:/Program Files/csound"
+          cp build/Release/*.dll "C:/Program Files/csound"
+          cp build/Release/*.lib "C:/Program Files/csound"
+
+          [Environment]::SetEnvironmentVariable("PATH", $Env:PATH + ";C:/Program Files/csound", [EnvironmentVariableTarget]::Machine)
+          $Env:Path = $Env:Path + ";C:/Program Files/csound"
 
           # Write-Output $Env:PATH
           csound.exe --version
