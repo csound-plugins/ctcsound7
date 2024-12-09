@@ -1,9 +1,17 @@
 from __future__ import annotations
 
-from .common import *
+from .common import (CSOUND_CONTROL_CHANNEL,
+                     CSOUND_AUDIO_CHANNEL,
+                     CSOUND_ARRAY_CHANNEL,
+                     CSOUND_PVS_CHANNEL,
+                     CSOUND_OUTPUT_CHANNEL,
+                     CSOUND_INPUT_CHANNEL,
+                     CSOUND_CHANNEL_TYPE_MASK,
+                     CSOUND_STRING_CHANNEL)
 import signal
 import ctypes
 import numpy as np
+import sys
 
 
 def asciistr(s) -> str:
@@ -73,7 +81,7 @@ def setupSigint(handler=lambda: sys.exit(0)):
     signal.signal(signal.SIGINT, _handler)
 
 
-def restoreSigint():
+def restoreSigint() -> None:
     """
     Restores the SIGINT handler previously replaced via :func:`setupSigint`
     """
@@ -82,7 +90,7 @@ def restoreSigint():
         signal.signal(signal.SIGINT, _sigintHandler)
 
 
-def defaultRealtimeModule():
+def defaultRealtimeModule() -> str:
     """
     Determines the default realtime module for the current architecture
     """
@@ -93,7 +101,13 @@ def defaultRealtimeModule():
     return 'pa_cb'
 
 
-def testCsound(module: str = '', sr: float = 0., outdev='', nchnls=2, dur=10., signal='pinker() * 0.2') -> None:
+def testCsound(module: str = '',
+               sr: float = 0.,
+               outdev='',
+               nchnls=2,
+               dur=10.,
+               signal='pinker() * 0.2'
+               ) -> None:
     """
     Test csound
 
@@ -153,4 +167,4 @@ def castarray(ptr: ctypes._Pointer | ctypes.c_void_p, shape: tuple[int, ...]) ->
     Cast a ctypes pointer to an array
     """
     arrtype = np.ctypeslib.ndpointer(dtype=MYFLT, ndim=len(shape), shape=shape, flags='C_CONTIGUOUS')
-    return ct.cast(ptr, arrtype).contents
+    return ctypes.cast(ptr, arrtype).contents

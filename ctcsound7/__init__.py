@@ -28,14 +28,10 @@
 #   02110-1301 USA
 #
 
-import ctypes as ct
-import ctypes.util
-import numpy as np
-import sys
 from . import _dll
-from .common import MYFLT, string128, cstring, DEFMSGFUNC, BUILDING_DOCS
+from . import common
 
-if not BUILDING_DOCS:
+if not common.BUILDING_DOCS:
     libcsound, libcsoundPath = _dll.csoundDLL()
     VERSION = libcsound.csoundGetVersion()
     if VERSION >= 7000:
@@ -54,31 +50,35 @@ else:
     from . import api7
 
 
-
-
 #Instantiation
-def csoundInitialize(flags):
+def csoundInitialize(flags) -> int:
     """Initializes Csound library with specific flags.
 
     This function is called internally by csoundCreate(), so there is generally
     no need to use it explicitly unless you need to avoid default initialization
     that sets signal handlers and atexit() callbacks.
-    Return value is zero on success, positive if initialization was
-    done already, and negative on error.
+
+    Returns:
+        zero on success, positive if initialization was done already, and negative on error.
+
     """
     return libcsound.csoundInitialize(flags)
 
 
-def setOpcodedir(s):
+def setOpcodedir(path: str) -> None:
     """Sets an opcodedir override for csoundCreate()."""
-    libcsound.csoundSetOpcodedir(cstring(s))
+    libcsound.csoundSetOpcodedir(common.cstring(path))
 
 
 def setDefaultMessageCallback(function):
-    """Not fully implemented. Do not use it yet except for disabling messaging:
+    """Not fully implemented. Do not use it yet except for disabling messaging
 
-    def noMessage(csound, attr, flags, *args):
-        pass
-    ctcsound.setDefaultMessageCallback(noMessage)
+    .. code-block:: python
+
+        def noMessage(csound, attr, flags, *args):
+            pass
+
+        ctcsound.setDefaultMessageCallback(noMessage)
+
     """
-    libcsound.csoundSetDefaultMessageCallback(DEFMSGFUNC(function))
+    libcsound.csoundSetDefaultMessageCallback(common.DEFMSGFUNC(function))

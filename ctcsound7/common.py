@@ -1,7 +1,5 @@
 from __future__ import annotations
 import ctypes as ct
-import numpy as np
-import numpy.ctypeslib
 import sys
 from dataclasses import dataclass
 from typing import Sequence

@@ -3,7 +3,6 @@ import ctypes as ct
 import ctypes.util
 import sys
 import os
-from functools import cache
 from .common import BUILDING_DOCS
 
 
@@ -41,6 +40,8 @@ def csoundDLL() -> tuple[ct.CDLL, str]:
             return dll, "libcsound64.so"
         except OSError:
             libname = ctypes.util.find_library("csound64")
+            if libname is None:
+                raise ImportError("Did not find csound library in linux")
     else:
         libname = csoundLibraryName()
     path = ctypes.util.find_library(libname)

@@ -1878,7 +1878,7 @@ class Csound:
         """
         return libcsound.csoundTableLength(self.cs, ct.c_int32(table))
 
-    def table(self, tableNum) -> np.ndarray | None:
+    def table(self, tableNum: int) -> np.ndarray | None:
         """Returns a pointer to function table tableNum as an ndarray.
 
         The ndarray does not include the guard point. If the table does not
