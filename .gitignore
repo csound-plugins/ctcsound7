@@ -9,3 +9,4 @@ test/*.wav
 test/*.ogg
 test/*.flac
 uv.lock
+pyrightconfig.json
