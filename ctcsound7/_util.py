@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from .common import (CSOUND_CONTROL_CHANNEL,
+from .common import (MYFLT,
+                     CSOUND_CONTROL_CHANNEL,
                      CSOUND_AUDIO_CHANNEL,
                      CSOUND_ARRAY_CHANNEL,
                      CSOUND_PVS_CHANNEL,

@@ -2238,6 +2238,7 @@ class CsoundPerformanceThread:
     """
     def __init__(self, csp: ct.c_void_p):
         self.cpt = libcspt.csoundCreatePerformanceThread(csp)
+        self._processCallback: tuple[ct._FuncPointer, _t.Any] | None = None
 
     def __del__(self):
         libcspt.csoundDestroyPerformanceThread(self.cpt)
@@ -2246,20 +2247,27 @@ class CsoundPerformanceThread:
         """Returns True if the performance thread is running, False otherwise."""
         return libcspt.csoundPerformanceThreadIsRunning(self.cpt) != 0
 
-    def processCallback(self) -> ct._FuncPointer:
+    def processCallback(self) -> ct._FuncPointer | None:
         """Returns the process callback."""
-        return PROCESSFUNC(libcspt.csoundPerformanceThreadGetProcessCB(self.cpt))
+        out = libcspt.csoundPerformanceThreadGetProcessCB(self.cpt)
+        if out:
+            return PROCESSFUNC(out)
+        return None
 
-    def setProcessCallback(self, function: _t.Callable[[ct.c_void_p, _t.Any], None], data):
+    def setProcessCallback(self, function: _t.Callable[[ct.c_void_p], None], data):
         """Sets the process callback.
 
         Args:
-            function: a function of the form ``(csound: void, data: Any) -> None``
+            function: a function of the form ``(data: void) -> None``
             data: can be anything
 
         TODO: how is the callback called? How does the callback access data?
         """
-        libcspt.csoundPerformanceThreadSetProcessCB(self.cpt, PROCESSFUNC(function), ct.byref(data))
+        procfunc = PROCESSFUNC(function)
+        self._processCallback = (procfunc, data)
+        libcspt.csoundPerformanceThreadSetProcessCB(self.cpt, procfunc, ct.byref(data))
+
+        # libcspt.csoundPerformanceThreadSetProcessCB(self.cpt, PROCESSFUNC(function), ct.byref(data))
 
     def csound(self) -> ct.c_void_p:
         """Returns the Csound instance pointer."""
