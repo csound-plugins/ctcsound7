@@ -484,6 +484,7 @@ class Csound:
         self._channelLocks: dict[str, ct.c_int32] = {}
         self._perfthread: CsoundPerformanceThread | None = None
         self._callbacks: dict[str, ct._FuncPointer] = {}
+        self._started = False
 
     def performanceThread(self) -> CsoundPerformanceThread:
         """
@@ -674,7 +675,9 @@ class Csound:
         it is only required if performance is started without
         a call to that function.
         """
-        return libcsound.csoundStart(self.cs)
+        if not self._started:
+            self._started = True
+            return libcsound.csoundStart(self.cs)
 
     def compile_(self, *args) -> int:
         """Compiles Csound input files (such as an orchestra and score).
@@ -761,6 +764,8 @@ class Csound:
         again to continue the stopped performance. Otherwise, :py:meth:`reset()`
         should be called to clean up after the finished or failed performance.
         """
+        if not self._started:
+            self.start()
         return libcsound.csoundPerform(self.cs)
 
     def performKsmps(self) -> bool:
@@ -781,6 +786,8 @@ class Csound:
         Enables external software to control the execution of Csound,
         and to synchronize performance with audio input and output.
         """
+        if not self._started:
+            self.start()
         return bool(libcsound.csoundPerformKsmps(self.cs))
 
     def performBuffer(self) -> bool:

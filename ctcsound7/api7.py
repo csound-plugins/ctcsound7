@@ -192,6 +192,8 @@ def _declareAPI(libcsound, libcspt):
     libcsound.csoundStart.argtypes = [CSOUND_p]
     libcsound.csoundPerformKsmps.restype = ct.c_int32
     libcsound.csoundPerformKsmps.argtypes = [CSOUND_p]
+    libcsound.csoundPerform.restype = ct.c_int32
+    libcsound.csoundPerform.artypes = [CSOUND_p]
     libcsound.csoundRunUtility.restype = ct.c_int32
     libcsound.csoundRunUtility.argtypes = [CSOUND_p, ct.c_char_p, ct.c_int32, ct.POINTER(ct.c_char_p)]
     libcsound.csoundReset.argtypes = [CSOUND_p]
@@ -423,6 +425,8 @@ class Csound:
         """Holds the PerformanceThread attached to this csound instance, if any"""
 
         self._compilationStarted = False
+
+        self._started = False
 
     def __del__(self):
         """Destroys an instance of Csound."""
@@ -911,21 +915,46 @@ class Csound:
         as real-time events, the <CsOptions> tag is ignored, and performance
         continues indefinitely or until ended using the API.
         """
-        return libcsound.csoundStart(self.cs)
+        if not self._started:
+            self._started = True
+            return libcsound.csoundStart(self.cs)
 
-    def stop(self):
+    def stop(self) -> None:
         """
         Only here for compatibility, not exposed in csound7
         """
         return
 
-    def cleanup(self):
+    def cleanup(self) -> None:
         """
         This is not needed in csound7, only here for compatibility
         """
         return
 
-    def performKsmps(self):
+    def perform(self) -> int:
+        """
+        Handles input events and performs audio output.
+
+        This is done until the end of score is reached (positive return value),
+        an error occurs (negative return value), or performance is stopped by
+        calling :py:meth:`stop()` from another thread (zero return value).
+
+        Returns:
+            0 if OK, an error code otherwise
+
+        Note that :py:meth:`compile_()`, or :py:meth:`compileOrc()`,
+        :py:meth:`readScore()`, :py:meth:`start()` must be
+        called first.
+
+        In the case of zero return value, :py:meth:`perform()` can be called
+        again to continue the stopped performance. Otherwise, :py:meth:`reset()`
+        should be called to clean up after the finished or failed performance.
+        """
+        if not self._started:
+            self.start()
+        return libcsound.csoundPerform(self.cs)
+
+    def performKsmps(self) -> bool:
         """Senses input events, and performs audio output.
 
         This is done for one control sample worth (ksmps) of audio output.
@@ -938,7 +967,9 @@ class Csound:
         Enables external software to control the execution of Csound,
         and to synchronize performance with audio input and output.
         """
-        return libcsound.csoundPerformKsmps(self.cs)
+        if not self._started:
+            self.start()
+        return bool(libcsound.csoundPerformKsmps(self.cs))
 
     def runUtility(self, name: str, args: list[str]) -> int:
         """Runs utility with the specified name and command line arguments.
@@ -966,6 +997,8 @@ class Csound:
         without reloading Csound.
         """
         libcsound.csoundReset(self.cs)
+        self._started = False
+        self._compilationStarted = False
 
     #
     # Realtime Audio I/O
