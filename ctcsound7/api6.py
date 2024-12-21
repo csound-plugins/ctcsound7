@@ -7,8 +7,10 @@ import ctypes as ct
 import ctypes.util
 from .common import *
 from . import _util
+import queue as _queue
+import threading as _threading
 import warnings
-from typing import Callable, Sequence, Iterator
+import typing as _t
 
 
 if not BUILDING_DOCS:
@@ -486,16 +488,45 @@ class Csound:
         self._callbacks: dict[str, ct._FuncPointer] = {}
         self._started = False
 
-    def performanceThread(self) -> CsoundPerformanceThread:
+    def performanceThread(self, withProcessQueue=False) -> CsoundPerformanceThread:
         """
-        Returns a CsoundPerformanceThread attached to this csound instance
+        Runs Csound in a separate thread.
+
+        Args:
+            withProcessQueue: if True, the performance thread is started with
+                a process queue set up. See :meth:`~CsoundPerformanceThread.setProcessQueue`
+
+        Returns:
+            the created performance thread object
+
+        .. seealso:: :meth:`Csound.performanceThread`
 
         Since there can be only one performance thread for each instance,
         calling this method repeatedly always returns the same thread as
         long as the thread has not been joint
+
+        The playback is paused at start time. It can be stopped
+        by calling :meth:`stop`.
+
+        Example
+        -------
+
+        .. code-block:: python
+
+            from ctcsound7 import *
+            cs = Csound(...)
+            ...
+            perfthread = cs.performanceThread()
+
+        To stop the performance thread, call :meth:`stop` and then :meth:`join`::
+
+            # When finished:
+            perfthread.stop()
+            perfthread.join()
+
         """
         if self._perfthread is None:
-            self._perfthread = CsoundPerformanceThread(self.cs)
+            self._perfthread = CsoundPerformanceThread(self)
         return self._perfthread
 
     def loadPlugins(self, directory: str) -> int:
@@ -671,15 +702,23 @@ class Csound:
         as real-time events, the <CsOptions> tag is ignored, and performance
         continues indefinitely or until ended using the API.
 
-        NB: this is called internally by :py:meth:`compile_()`, therefore
-        it is only required if performance is started without
-        a call to that function.
+        .. note::
+
+            This is called internally by :py:meth:`compileCommandLine()`, therefore
+            it is only required if performance is started without
+            a call to that function.
         """
-        if not self._started:
+        if self._started:
+            return CSOUND_SUCCESS
+        else:
             self._started = True
             return libcsound.csoundStart(self.cs)
 
-    def compile_(self, *args) -> int:
+    def compile(self, *args, **kws):
+        warnings.warn("This method is deprecated, use compileCommandLine")
+        raise DeprecationWarning("This method has been renamed to compileCommandLine")
+
+    def compileCommandLine(self, *args) -> int:
         """Compiles Csound input files (such as an orchestra and score).
 
         As directed by the supplied command-line arguments,
@@ -719,10 +758,12 @@ class Csound:
             cs.cleanup()
             cs.reset()
 
-        NB: this function can be called during performance to
-        replace or add new instruments and events.
-        On a first call and if called before :py:meth:`start()`, this function
-        behaves similarly to :py:meth:`compile_()`.
+        .. note::
+
+            This function can be called during performance to
+            replace or add new instruments and events.
+            On a first call and if called before :py:meth:`start()`, this function
+            behaves similarly to :py:meth:`compile_()`.
         """
         return libcsound.csoundCompileCsd(self.cs, cstring(path))
 
@@ -739,10 +780,12 @@ class Csound:
             cs.cleanup()
             cs.reset()
 
-        NB: a temporary file is created, the csd_text is written to the
-        temporary file, and :py:meth:`compileCsd` is called with the name of
-        the temporary file, which is deleted after compilation. Behavior may
-        vary by platform.
+        .. note::
+
+            A temporary file is created, the csd_text is written to the
+            temporary file, and :py:meth:`compileCsd` is called with the name of
+            the temporary file, which is deleted after compilation. Behavior may
+            vary by platform.
         """
         return libcsound.csoundCompileCsdText(self.cs, cstring(code))
 
@@ -798,13 +841,15 @@ class Csound:
         Returns:
             True if performance is finished, False otherwise
 
-        Note that :py:meth:`compile_()` must be called first, then call
+        Note that :py:meth:`compileCommandLine()` must be called first, then call
         :py:meth:`outputBuffer()` and :py:meth:`inputBuffer(`) to get ndarrays
         pointing to Csound's I/O buffers.
 
         Returns :code:`False` during performance, and :code:`true` when
         performance is finished.
         """
+        if not self._started:
+            self.start()
         return bool(libcsound.csoundPerformBuffer(self.cs))
 
     def stop(self) -> None:
@@ -952,7 +997,12 @@ class Csound:
 
         .. note:: blank spaces are not allowed.
         """
-        return libcsound.csoundSetOption(self.cs, cstring(option))
+        parts = _util.splitCommandLine(option)
+        options = option.split()
+        out = 0
+        for part in options:
+            out |= libcsound.csoundSetOption(self.cs, cstring(part))
+        return out
 
     def setParams(self, params: CsoundParams) -> None:
         """Configures Csound with a given set of parameters.
@@ -1134,7 +1184,7 @@ class Csound:
                     "command-line options instead")
         libcsound.csoundSetMIDIFileOutput(self.cs, cstring(name))
 
-    def setFileOpenCallback(self, function: Callable[[bytes, int, int, int], None]) -> None:
+    def setFileOpenCallback(self, function: _t.Callable[[bytes, int, int, int], None]) -> None:
         """Sets a callback for receiving notices whenever Csound opens a file.
 
         Args:
@@ -1302,8 +1352,8 @@ class Csound:
         The frame and channel must be in bounds relative to :py:meth:`ksmps()`
         and :py:meth:`nchnlsInput()`.
 
-        NB: the spin buffer needs to be cleared at every k-cycle by calling
-        :py:meth:`clearSpin()`.
+        .. note:: The spin buffer needs to be cleared at every k-cycle by calling
+            :py:meth:`clearSpin()`.
 
         Args:
             frame: frame number
@@ -1421,7 +1471,7 @@ class Csound:
             lst.append(d)
         return lst
 
-    def setPlayOpenCallback(self, function: Callable) -> None:
+    def setPlayOpenCallback(self, function: _t.Callable) -> None:
         """Sets a callback for opening real-time audio playback.
 
         Args:
@@ -1433,7 +1483,7 @@ class Csound:
         self.playOpenCbRef = PLAYOPENFUNC(function)
         libcsound.csoundSetPlayopenCallback(self.cs, self.playOpenCbRef)
 
-    def setRtPlayCallback(self, function: Callable) -> None:
+    def setRtPlayCallback(self, function: _t.Callable) -> None:
         """Sets a callback for performing real-time audio playback.
 
         .. note:: not implemented in csound 7
@@ -1442,7 +1492,7 @@ class Csound:
         self.rtPlayCbRef = RTPLAYFUNC(function)
         libcsound.csoundSetRtplayCallback(self.cs, self.rtPlayCbRef)
 
-    def setRecordOpenCallback(self, function: Callable) -> None:
+    def setRecordOpenCallback(self, function: _t.Callable) -> None:
         """Sets a callback for opening real-time audio recording.
 
         .. note:: not implemented in csound 7
@@ -1451,7 +1501,7 @@ class Csound:
         self._callbacks['recordOpen'] = f = RECORDOPENFUNC(function)
         libcsound.csoundSetRecopenCallback(self.cs, f)
 
-    def setRtRecordCallback(self, function: Callable) -> None:
+    def setRtRecordCallback(self, function: _t.Callable) -> None:
         """Sets a callback for performing real-time audio recording.
 
         .. note:: not implemented in csound 7
@@ -1737,7 +1787,7 @@ class Csound:
         self.popFirstMessage()
         return msg, attr
 
-    def iterMessages(self) -> Iterator[tuple[str, int]]:
+    def iterMessages(self) -> _t.Iterator[tuple[str, int]]:
         """
         Iterate over the messages in the message buffer
 
@@ -1831,7 +1881,7 @@ class Csound:
         If the channel already exists, it must match the data type
         (control, audio, or string), however, the input/output bits are
         OR'd with the new value. Note that audio and string channels
-        can only be created after calling :py:meth:`compile_()`, because the
+        can only be created after calling :py:meth:`compileCommandLine()`, because the
         storage size is not known until then.
 
         Operations on the pointer are not thread-safe by default. The host is
@@ -1878,7 +1928,7 @@ class Csound:
         If the channel already exists, it must match the data type
         (control, string, audio, pvs or array), however, the input/output bits
         are OR'd with the new value. Note that audio and string channels
-        can only be created after calling compile_(), because the
+        can only be created after calling compileCommandLine(), because the
         storage size is not known until then.
 
         Return value is zero on success, or a negative error code,
@@ -2395,9 +2445,11 @@ class Csound:
         The pointer is returned as an ndarray. If the table does not exist,
         :code:`None` is returned.
 
-        NB: the argument list starts with the GEN number and is followed by
-        its parameters. eg. f 1 0 1024 10 1 0.5  yields the list
-        {10.0, 1.0, 0.5}
+        .. note::
+
+            The argument list starts with the GEN number and is followed by
+            its parameters. eg. ``f 1 0 1024 10 1 0.5``  yields the list
+            ``{10.0, 1.0, 0.5}``
         """
         ptr = ct.POINTER(MYFLT)()
         size = libcsound.csoundGetTableArgs(self.cs, ct.byref(ptr), tableNum)
@@ -2493,7 +2545,7 @@ class Csound:
     def newOpcodeList(self) -> tuple[ct.Array[OpcodeListEntry] | None, int]:
         """Gets an alphabetically sorted list of all opcodes.
 
-        Should be called after externals are loaded by :py:meth:`compile_()`.
+        Should be called after externals are loaded by :py:meth:`compileCommandLine()`.
         Returns a pointer to the list of OpcodeListEntry structures and the
         number of opcodes, or a negative error code on  failure.
         Make sure to call :py:meth:`disposeOpcodeList()` when done with the
@@ -2849,7 +2901,7 @@ class Csound:
             name: the name of the variable
             withCsoundInstance: if True, the local environment of the
                 current instance is taken into account. Should be called
-                after :py:meth:`compile_()`
+                after :py:meth:`compileCommandLine()`
 
         Returns:
             the value of the variable, or None if it is not set
@@ -3172,13 +3224,13 @@ class CsoundPerformanceThread:
     The playback (which is paused by default) is stopped by calling
     :py:meth:`stop()`, or if an error occurs.
     The constructor takes a Csound instance pointer as argument; it assumes
-    that :py:meth:`ctcsound.compile_()` was called successfully before creating
+    that :py:meth:`ctcsound.compileCommandLine()` was called successfully before creating
     the performance thread. Once the playback is stopped for one of the above
     mentioned reasons, the performance thread calls :py:meth:`ctcsound.cleanup()`
     and returns.
 
     Args:
-        csp: the pointer to the Csound instance
+        csound: the Csound object (not the bare pointer)
 
     Example
     -------
@@ -3188,15 +3240,22 @@ class CsoundPerformanceThread:
         from ctcsound7 import *
         cs = Csound(...)
         ...
-        perfthread = CsoundPerformanceThread(cs.csound())
+        perfthread = CsoundPerformanceThread(cs)
 
-    Or simply::
+    From the user perspective the recommended way to create a performance thread
+    is to call the :meth:`~Csound.performanceThread` method::
 
         perfthread = cs.performanceThread()
     """
-    def __init__(self, csp: ct.c_void_p):
+    def __init__(self, csound: Csound, withProcessQueue=False):
+        self._csound = csound
+        csp = csound.csound()
         self.cpt = libcspt.NewCsoundPT(csp)
         self._callbacks: dict[str, ct._FuncPointer] = {}
+        self._processQueue: _queue.SimpleQueue | None = None
+        self._processCallback: tuple[ct._FuncPointer, _t.Any] | None = None
+        if withProcessQueue:
+            self.setProcessQueue()
 
     def __del__(self):
         libcspt.DeleteCsoundPT(self.cpt)
@@ -3209,17 +3268,163 @@ class CsoundPerformanceThread:
         """Returns the process callback."""
         return PROCESSFUNC(libcspt.CsoundPTgetProcessCB(self.cpt))
 
-    def setProcessCallback(self, function: Callable[[ct.c_void_p], None], data):
+    def setProcessCallback(self, function: _t.Callable[[ct.c_void_p], None], data=None):
+        """Sets the process callback.
+
+        Args:
+            function: a function of the form ``(data: void) -> None``
+            data: can be anything
+
+        The callback is called with a pointer to the data passed as ``data``
+        """
+        if self._processQueue is not None:
+            raise RuntimeError(f"Process callback already set to manage the process queue")
+        self._setProcessCallback(function=function, data=data)
+
+    def _setProcessCallback(self, function: _t.Callable[[ct.c_void_p], None], data=None):
         """Sets the process callback.
 
         Args:
             function: a function of the form ``(csound: void) -> None``
+            data: data passed to the function
 
         TODO: how is the callback called?
         """
-        self._callbacks['process'] = func = PROCESSFUNC(function)
-        self._callbacks['process-data'] = data
-        libcspt.CsoundPTsetProcessCB(self.cpt, func, ct.byref(data))
+        if data is None:
+            data = ct.c_void_p()
+        procfunc = PROCESSFUNC(function)
+        self._processCallback = (procfunc, data)
+        libcspt.CsoundPTsetProcessCB(self.cpt, procfunc, ct.byref(data))
+
+    def setProcessQueue(self) -> None:
+        """
+        Setup a queue to pprocess tasks within the performance loop
+
+        This is useful if access to the csound API is needed during a performance
+        (code compilation, table access, etc), since when a performance thread is
+        active any access to the API can result in high latency
+
+        .. note:: this sets up the process callback.
+        """
+        if self._processQueue is not None:
+            return
+        elif self._processCallback is not None:
+            raise RuntimeError(f"Process callback already set")
+        self._processQueue = _queue.SimpleQueue()
+        self._setProcessCallback(self._processQueueCallback)
+
+    def _processQueueCallback(self, data) -> None:
+        assert self._processQueue is not None
+        N = self._processQueue.qsize()
+        if N > 0:
+            for _ in range(min(10, N)):
+                job = self._processQueue.get_nowait()
+                job(self._csound, self)
+
+    def task(self, func: _t.Callable[[Csound, CsoundPerformanceThread, _t.Any], None], data=None) -> None:
+        """
+        Add a task to the process queue, to be picked up by the process callback
+
+        Args:
+            func: a function of the form (csound: Csound, thread: CsoundPerformanceThread) -> None,
+                which can access the csound
+
+        .. note:: this sets the process callback for this thread. It will fail if the
+            process callback has been set already.
+
+        Example
+        ~~~~~~~
+
+        Allocate a table in csound, return the table array
+
+        .. code-block:: python
+
+            import queue
+            cs = Csound()
+            cs.compileOrc(...)
+            thread = cs.performanceThread()
+
+            sndfile = "/path/to/sndfile.wav"
+            tabnum = cs.evalCode('gi__tabnum ftgen 0, 0, -1, "{sndfile}", 0, 0, 0\nreturn gi__tabnum')
+            q = queue.SimpleQueue()
+
+            thread.task(lambda csound, thread, tabnum=tabnum, q=q: q.put(csound.table(tabnum))
+            array = q.get(block=True)
+        """
+        if self._processQueue is None:
+            raise RuntimeError("This action needs the process queue, start it via "
+                               "the setProcessQueue method")
+        assert self._processQueue is not None
+        self._processQueue.put_nowait(func)
+
+    def sync(self, timeout: float | None = None) -> None:
+        """
+        Wait until all tasks have been acted upon
+
+        Args:
+            timeout: if given, a max. amount of time to wait
+        """
+        if self._processQueue is None or self._processQueue.qsize() == 0:
+            return
+        event = _threading.Event()
+        self.task(lambda cs, pt, e=event: e.set())
+        event.wait(timeout=timeout)
+
+    def compile(self, code: str) -> None:
+        """
+        Compile orchestra code via the process queue
+
+        Args:
+            code: code to send to the running csound instance
+
+        When using a performance thread, any access to the API can only happen
+        after a buffer has been performed, resulting in added latency.
+        To solve this, the performance thread provides a process callback, which
+        is fired at each cycle. This method uses that callback to schedule
+        a compilation action
+        """
+        if self._processQueue is None:
+            raise RuntimeError("This action needs the process queue, start it via "
+                               "the setProcessQueue method")
+        assert self._processQueue is not None
+        self._processQueue.put_nowait(lambda cs, pt: cs.compileOrc(code))
+
+    def evalCode(self, code: str, callback: _t.Callable[[float], None]=None, timeout=5.) -> float:
+        """
+        Similar to :meth:`Csound.evalCode`, but run through the process callback
+
+        Args:
+            code: the code to evaluate. It must end with a ``return`` statement,
+                returning one scalar value
+            callback: if given, the function is called with the generated value and
+                this method runs non-blocking. Otherwise this method blocks until the
+                code is evaluated and the resulting value is returned
+
+        Returns:
+            the evaluated value if callback was not given, 0. otherwise
+
+        Example
+        ~~~~~~~
+
+        Allocate an empty table, return the table number. This will block for at least the
+        duration of one performance cycle
+
+            csound = Csound()
+            csound.compileOrc(...)
+            thread = csound.performanceThread(withProcessQueue=True)
+            bufsize = 1024
+            tabnum = thread.evalCode(f'gi__tabnum ftgen 0, 0, {-bufsize}, -2, 0\nreturn gi__tabnum')
+
+        """
+        if not callback:
+            q = _queue.SimpleQueue()
+            def func(cs, pt, q=q):
+                 q.put(cs.evalCode(code))
+            self.task(func)
+            return q.get(timeout=timeout)
+        else:
+            self.task(lambda cs, pt, func=callback: func(cs.evalCode(code)))
+            return 0.
 
     def csound(self) -> ct.c_void_p:
         """Returns the Csound instance pointer."""
@@ -3236,6 +3441,8 @@ class CsoundPerformanceThread:
 
     def play(self) -> None:
         """Continues performance if it was paused."""
+        if not self._csound._started:
+            self._csound.start()
         libcspt.CsoundPTplay(self.cpt)
 
     def pause(self) -> None:
@@ -3295,7 +3502,7 @@ class CsoundPerformanceThread:
         """
         libcspt.CsoundPTsetScoreOffsetSeconds(self.cpt, ct.c_double(time))
 
-    def join(self) -> None:
+    def join(self) -> int:
         """Waits until the performance is finished or fails.
 
         Returns a positive value if the end of score was reached or

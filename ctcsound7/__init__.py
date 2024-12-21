@@ -51,27 +51,44 @@ else:
 
 
 #Instantiation
-def csoundInitialize(flags) -> int:
+def csoundInitialize(signalHandler=True, atExitHandler=True) -> int:
     """Initializes Csound library with specific flags.
 
     This function is called internally by csoundCreate(), so there is generally
     no need to use it explicitly unless you need to avoid default initialization
     that sets signal handlers and atexit() callbacks.
 
+    Within a python context, it is often necessary to call this function
+    with `signalHandler=False` in order for csound not to obstruct
+    python's own SIGINT (Keyboard Interrupt) handler
+
+    Args:
+        signalHandler: if True, add a signal handler
+        atExitHandler: if True, adds a callback to destroy all instances of csound
+            when exiting
+
     Returns:
         zero on success, positive if initialization was done already, and negative on error.
 
     """
+    flags = 0
+    if not signalHandler:
+        flags |= common.CSOUNDINIT_NO_SIGNAL_HANDLER
+    if not atExitHandler:
+        flags |= common.CSOUNDINIT_NO_ATEXIT
     return libcsound.csoundInitialize(flags)
 
 
 def setOpcodedir(path: str) -> None:
-    """Sets an opcodedir override for csoundCreate()."""
+    """
+    Overrides the folder used to locate plugins
+    """
     libcsound.csoundSetOpcodedir(common.cstring(path))
 
 
 def setDefaultMessageCallback(function):
-    """Not fully implemented. Do not use it yet except for disabling messaging
+    """
+    Not fully implemented but useful for disabling messaging
 
     .. code-block:: python
 

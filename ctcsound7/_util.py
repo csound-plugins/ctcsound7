@@ -1,4 +1,9 @@
 from __future__ import annotations
+import warnings
+import signal
+import ctypes
+import numpy as np
+import sys
 
 from .common import (MYFLT,
                      CSOUND_CONTROL_CHANNEL,
@@ -9,10 +14,6 @@ from .common import (MYFLT,
                      CSOUND_INPUT_CHANNEL,
                      CSOUND_CHANNEL_TYPE_MASK,
                      CSOUND_STRING_CHANNEL)
-import signal
-import ctypes
-import numpy as np
-import sys
 
 
 def asciistr(s) -> str:
@@ -169,3 +170,27 @@ def castarray(ptr: ctypes._Pointer | ctypes.c_void_p, shape: tuple[int, ...]) ->
     """
     arrtype = np.ctypeslib.ndpointer(dtype=MYFLT, ndim=len(shape), shape=shape, flags='C_CONTIGUOUS')
     return ctypes.cast(ptr, arrtype).contents
+
+
+
+def deprecated(func):
+    """
+    Decorator used to mark functions as deprecated
+
+    It will result in a warning being emitted
+    when the function is used."""
+    import functools
+    @functools.wraps(func)
+    def newfunc(*args, **kwargs):
+        warnings.simplefilter('always', DeprecationWarning)  # turn off filter
+        warnings.warn("Call to deprecated function {}.".format(func.__name__),
+                      category=DeprecationWarning,
+                      stacklevel=2)
+        warnings.simplefilter('default', DeprecationWarning)  # reset filter
+        return func(*args, **kwargs)
+    return newfunc
+
+
+def splitCommandLine(args: str) -> list[str]:
+    import re
+    return re.findall(r"(?:\".*?\"|\S)+", args)
